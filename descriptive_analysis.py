@@ -2,7 +2,14 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
+from collections import Counter
 from lib.io import read_data
+
+
+def output_frequencies(data_list):
+    counter = Counter(data_list)
+    for key, value in sorted(counter.items(), key=lambda x: (-x[1], x[0])):
+        print('  ' + str(key) + ': ' + str(value))
 
 
 def run(input_path):
@@ -10,6 +17,7 @@ def run(input_path):
     # Read the data set
     data = read_data(input_path)
 
+    # Print header
     print('--------------------------------------------------')
     print('Descriptive analysis')
     print('--------------------------------------------------')
@@ -26,7 +34,7 @@ def run(input_path):
           'performed on:')
     print('  ' + str(subjects))
     print('Their frequencies within the data set are the following:')
-    # TODO
+    output_frequencies(data['subjects'])
     print('')
 
     # Analyse Brodmann areas
@@ -35,7 +43,7 @@ def run(input_path):
           'the tests:')
     print('  ' + str(areas))
     print('Their frequencies within the data set are the following:')
-    # TODO
+    output_frequencies(data['areas'])
     print('')
 
     # Analyse image categories
@@ -44,7 +52,7 @@ def run(input_path):
           'categories that the images have been classified into:')
     print('  ' + str(image_categories))
     print('Their frequencies within the data set are the following:')
-    # TODO
+    output_frequencies(data['image_category'])
     print('')
 
     # Analyse tests
@@ -54,9 +62,6 @@ def run(input_path):
           'integer denoting the neural response in the specifed Brodmann ' +
           'area of the specified patient after showing them the specified ' +
           'image.')
-
-
-    # TODO: Analysis
 
 
 if __name__ == '__main__':
