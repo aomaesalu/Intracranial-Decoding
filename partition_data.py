@@ -1,16 +1,46 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf8 -*-i
 
+# TODO: Add a parameter for ensuring that the data distribution within the test
+# and training sets is the same.
+
 from argparse import ArgumentParser
-from lib.io import read_data
+from random import sample
+from lib.io import read_data, write_data
 
 
-def run(input_path, train_path, test_path, train_size=80):
+def run(input_path, train_path, test_path, train_size):
 
     # Read the data set
     data = read_data(input_path)
 
-    # TODO: Partitioning
+    # Generate the training set indices
+    number_of_images = len(data['image_category'])
+    train_indices = sorted(sample(range(number_of_images),
+                                  int(number_of_images * float(train_size) \
+                                      / 100)))
+
+    # Calculate the test set indices
+    test_indices = sorted(list(set(range(number_of_images)) \
+                               - set(train_indices)))
+
+    # Partition data
+    train_data = {
+        'subjects': data['subjects'],
+        'areas': data['areas'],
+        'image_category': [data['image_category'][i] for i in train_indices],
+        'neural_responses': [data['neural_responses'][i] for i in train_indices]
+    }
+    test_data = {
+        'subjects': data['subjects'],
+        'areas': data['areas'],
+        'image_category': [data['image_category'][i] for i in test_indices],
+        'neural_responses': [data['neural_responses'][i] for i in test_indices]
+    }
+
+    # Save data
+    write_data(train_path, train_data)
+    write_data(test_path, test_data)
 
 
 if __name__ == '__main__':
