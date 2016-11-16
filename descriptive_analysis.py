@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
-from .lib.io import read_data
+from lib.io import read_data
 
 
 def run(input_path):
