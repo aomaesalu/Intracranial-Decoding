@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from lib.io import read_data
 
 
-def run(input_path, train_path, test_path):
+def run(input_path, train_path, test_path, train_size=80):
 
     # Read the data set
     data = read_data(input_path)
@@ -24,7 +24,9 @@ if __name__ == '__main__':
                                             file path')
     PARSER.add_argument('test_path', help='the pickled output testing data \
                                            file path')
+    PARSER.add_argument('train_size', help='the size of the training data set')
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data partition script
-    run(ARGUMENTS.input_path, ARGUMENTS.train_path, ARGUMENTS.test_path)
+    run(ARGUMENTS.input_path, ARGUMENTS.train_path, ARGUMENTS.test_path,
+        ARGUMENTS.train_size)
