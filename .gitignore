@@ -1,1 +1,7 @@
+data/*
+private/*
+text/*
+*.pyc
 *.pkl
+*.csv
+*~
