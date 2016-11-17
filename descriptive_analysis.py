@@ -29,28 +29,22 @@ def run(input_path):
     print('')
 
     # Analyse subjects
-    subjects = sorted(list(set(data['subjects'])))
-    print('There are ' + str(len(subjects)) + ' unique subjects tests were ' +
-          'performed on:')
-    print('  ' + str(subjects))
+    print('There are ' + str(len(set(data['subjects']))) + ' ' +
+          'unique subjects tests were performed on.')
     print('Their frequencies within the data set are the following:')
     output_frequencies(data['subjects'])
     print('')
 
     # Analyse Brodmann areas
-    areas = sorted(list(set(data['areas'])))
-    print('There are ' + str(len(areas)) + ' unique Brodmann areas used in ' +
-          'the tests:')
-    print('  ' + str(areas))
+    print('There are ' + str(len(set(data['areas']))) + ' ' +
+          'unique Brodmann areas used in the tests.')
     print('Their frequencies within the data set are the following:')
     output_frequencies(data['areas'])
     print('')
 
     # Analyse image categories
-    image_categories = sorted(list(set(data['image_category'])))
-    print('There are ' + str(len(image_categories)) + ' unique image ' +
-          'categories that the images have been classified into:')
-    print('  ' + str(image_categories))
+    print('There are ' + str(len(set(data['image_category']))) + ' unique ' +
+          'image categories that the images have been classified into.')
     print('Their frequencies within the data set are the following:')
     output_frequencies(data['image_category'])
     print('')
@@ -62,6 +56,7 @@ def run(input_path):
           'integer denoting the neural response in the specifed Brodmann ' +
           'area of the specified patient after showing them the specified ' +
           'image.')
+    print('--------------------------------------------------')
 
 
 if __name__ == '__main__':
