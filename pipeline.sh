@@ -13,7 +13,7 @@ N=10
 for (( i=1; i<=N; i++ ))
 do
     printf '# Pipeline: Partitioning data (%d)\n' $i
-    python2.7 ./partition_data.py data/stim_probe_category_ON_meangamma_bipolar_noscram_artif_brodmann_resppositive.pkl data/train-$i.pkl data/test-$i.pkl 80
+    python2.7 ./partition_data.py data/stim_probe_category_ON_meangamma_bipolar_noscram_artif_brodmann_resppositive.pkl data/train-$i.pkl data/test-$i.pkl 80 --even
     printf '\n'
 done
 
