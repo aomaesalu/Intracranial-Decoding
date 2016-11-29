@@ -1,9 +1,6 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf8 -*-i
 
-# TODO: Add a parameter for ensuring that the data distribution within the test
-# and training sets is the same.
-
 from argparse import ArgumentParser
 from random import sample
 from lib.io import read_data, write_data
