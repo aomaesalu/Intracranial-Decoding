@@ -19,9 +19,10 @@ class Score(object):
         self.classes = sorted(set(true_values))
 
         # Calculate scores
-        self.calculate()
+        self.calculate_separated()
+        self.calculate_average()
 
-    def calculate(self):
+    def calculate_separated(self):
 
         # Check that the true values and predictions are of the same size
         if len(self.true_values) != len(self.predictions):
@@ -44,6 +45,8 @@ class Score(object):
         for image_class in self.classes:
             self.scores[image_class] = f1_score(len(separated[image_class]) * \
                                        [True], separated[image_class])
+
+    def calculate_average(self):
 
         # Calculate the average F1 score
         # We are using macro averaging because it doesn't take class
