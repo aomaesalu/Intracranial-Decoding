@@ -2,10 +2,7 @@
 # -*- coding: utf8 -*-i
 
 from sklearn.metrics import precision_score, recall_score, f1_score
-
-
-def pad(string, length, character=' '):
-    return str(string) + (length - len(str(string))) * character
+from string import pad
 
 
 class Score(object):
