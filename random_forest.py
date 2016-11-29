@@ -3,9 +3,8 @@
 
 from argparse import ArgumentParser
 from lib.io import read_data
-from lib.score import calculate_scores
+from lib.score import Score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import f1_score
 
 
 def run(train_path, test_path):
@@ -22,13 +21,8 @@ def run(train_path, test_path):
     prediction = model.predict(test_data['neural_responses'])
 
     # Scoring
-    scores, average_score = calculate_scores(test_data['image_category'],
-                                             prediction)
-    print('F1 scores per class')
-    for image_class, score in sorted(scores.items()):
-        print(str(image_class) + ': ' + str(score))
-    print('Average F1 score: ' + str(average_score))
-
+    score = Score(test_data['image_category'], prediction)
+    print(score)
 
 if __name__ == '__main__':
 

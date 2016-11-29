@@ -3,7 +3,7 @@
 
 from argparse import ArgumentParser
 from lib.io import read_data
-from lib.score import calculate_scores
+from lib.score import Score
 from sklearn import svm
 
 
@@ -24,17 +24,13 @@ def run(train_path, test_path):
     # array of size [n_samples]
     svcClassif.fit(train_data['neural_responses'], train_data['image_category'])
     print('Performing classification on test samples...')
-    results=svcClassif.predict(test_data['neural_responses'])
+    results = svcClassif.predict(test_data['neural_responses'])
     print 'Resulting classifications: ', results
     print 'Actual classes: ', test_data['image_category']
 
     # Scoring
-    scores, average_score = calculate_scores(test_data['image_category'],
-                                             results)
-    print('F1 scores per class')
-    for image_class, score in sorted(scores.items()):
-        print(str(image_class) + ': ' + str(score))
-    print('Average F1 score: ' + str(average_score))
+    score = Score(test_data['image_category'], results)
+    print(score)
 
 
 if __name__ == '__main__':
