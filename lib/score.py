@@ -34,17 +34,23 @@ class Score(object):
         # Initialise dictionary values for each class
         for image_class in self.classes:
             self.scores[image_class] = None
-            separated[image_class] = []
+            separated[image_class] = [[], []]
 
         # Separate the prediction data set by class
         for i in range(len(self.predictions)):
-            separated[self.true_values[i]].append(self.predictions[i] == \
-                                                  self.true_values[i])
+            if self.true_values[i] == self.predictions[i]:
+                for j in range(2):
+                    separated[self.true_values[i]][j].append(True)
+            else:
+                separated[self.true_values[i]][0].append(True)
+                separated[self.true_values[i]][1].append(False)
+                separated[self.predictions[i]][0].append(False)
+                separated[self.predictions[i]][1].append(True)
 
         # Find the score for each class
         for image_class in self.classes:
-            self.scores[image_class] = f1_score(len(separated[image_class]) * \
-                                       [True], separated[image_class])
+            self.scores[image_class] = f1_score(separated[image_class][0],
+                                                separated[image_class][1])
 
     def calculate_average(self):
 
