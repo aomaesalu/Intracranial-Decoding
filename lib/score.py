@@ -4,6 +4,53 @@
 from sklearn.metrics import precision_score, recall_score, f1_score
 from string import pad
 
+# TODO: Use the confusion matrix in scoring
+
+
+class ConfusionMatrix(object):
+
+    def __init__(self, true_values, predictions):
+
+        # Set data variables from parameters
+        self.true_values = true_values
+        self.predictions = predictions
+
+        # Find all classes
+        self.classes = sorted(set(true_values) | set(predictions))
+
+        # Initialise matrix
+        self.initialise()
+
+        # Construct confusion matrix
+        self.construct()
+
+    def initialise(self):
+
+        # Create a complete confusion matrix with 0-s
+        self.matrix = {}
+        for class_1 in self.classes:
+            self.matrix[class_1] = {}
+            for class_2 in self.classes:
+                self.matrix[class_1][class_2] = 0
+
+    def construct(self):
+
+        for i in range(len(self.predictions)):
+            self.matrix[self.true_values[i]][self.predictions[i]] += 1
+
+    def __str__(self):
+        output = 'Confusion matrix:\n'
+        output += '    ' + pad('class', 8)
+        for class_2 in self.classes:
+            output += pad(class_2, 8)
+        output += '\n'
+        for class_1 in self.classes:
+            output += '    ' + pad(class_1, 8)
+            for class_2 in self.classes:
+                output += pad(self.matrix[class_1][class_2], 8)
+            output += '\n'
+        return output
+
 
 class Score(object):
 
@@ -18,7 +65,7 @@ class Score(object):
         self.average_scores = {}
 
         # Find all classes in test data
-        self.classes = sorted(set(true_values))
+        self.classes = sorted(set(true_values) | set(predictions))
 
         # Calculate scores
         self.calculate_separated()
@@ -59,7 +106,6 @@ class Score(object):
                 'f1': f1_score(separated[image_class][0],
                                separated[image_class][1])
             }
-
 
     def calculate_average(self):
 

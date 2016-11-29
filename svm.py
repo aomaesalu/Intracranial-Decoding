@@ -3,7 +3,7 @@
 
 from argparse import ArgumentParser
 from lib.io import read_data
-from lib.score import Score
+from lib.score import ConfusionMatrix, Score
 from sklearn import svm
 
 
@@ -24,12 +24,14 @@ def run(train_path, test_path):
     # array of size [n_samples]
     svcClassif.fit(train_data['neural_responses'], train_data['image_category'])
     print('Performing classification on test samples...')
-    results = svcClassif.predict(test_data['neural_responses'])
-    print 'Resulting classifications: ', results
+    prediction = svcClassif.predict(test_data['neural_responses'])
+    print 'Resulting classifications: ', prediction
     print 'Actual classes: ', test_data['image_category']
 
     # Scoring
-    score = Score(test_data['image_category'], results)
+    confusion_matrix = ConfusionMatrix(test_data['image_category'], prediction)
+    print(confusion_matrix)
+    score = Score(test_data['image_category'], prediction)
     print(score)
 
 
@@ -37,10 +39,10 @@ if __name__ == '__main__':
 
     # Parse command line arguments
     PARSER = ArgumentParser()
-    PARSER.add_argument('train_path', help='the pickled output training data \
-                                            file path')
-    PARSER.add_argument('test_path', help='the pickled output testing data \
-                                           file path')
+    PARSER.add_argument('train_path', help='the pickled output training data ' +
+                                           'file path')
+    PARSER.add_argument('test_path', help='the pickled output testing data ' +
+                                          'file path')
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
