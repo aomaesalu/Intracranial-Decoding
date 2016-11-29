@@ -33,5 +33,7 @@ def calculate_scores(true_values, predictions):
     for image_class in classes:
         scores[image_class] = f1_score(len(separated_predictions[image_class]) * [True], separated_predictions[image_class])
 
-    # Return the score dictionary
+    # Return the score dictionary and the average score for the whole data set
+    # We are using macro averaging because it doesn't take class distribution
+    # inbalance into account. Each class is as important as another.
     return scores, f1_score(true_values, predictions, average='macro')

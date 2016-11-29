@@ -22,11 +22,6 @@ def run(train_path, test_path):
     prediction = model.predict(test_data['neural_responses'])
 
     # Scoring
-    # We are using macro averaging because it doesn't take class distribution
-    # inbalance into account. Each class is as important as another.
-    # In the future, we should also measure scores for each class separately.
-    # Currently, sometimes it can happen that there are no positives for a class
-    # and the measure is ruined.
     scores, average_score = calculate_scores(test_data['image_category'],
                                              prediction)
     print('F1 scores per class')
