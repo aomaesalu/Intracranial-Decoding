@@ -4,6 +4,7 @@
 from argparse import ArgumentParser
 from lib.io import read_data
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
 
 
 def run(train_path, test_path):
@@ -13,7 +14,21 @@ def run(train_path, test_path):
     test_data = read_data(test_path)
 
     # Classification
-    # TODO
+    model = RandomForestClassifier(n_estimators=100)
+    model.fit(train_data['neural_responses'], train_data['image_category'])
+
+    # Prediction
+    prediction = model.predict(test_data['neural_responses'])
+
+    # Scoring
+    # We are using macro averaging because it doesn't take class distribution
+    # inbalance into account. Each class is as important as another.
+    # In the future, we should also measure scores for each class separately.
+    # Currently, sometimes it can happen that there are no positives for a class
+    # and the measure is ruined.
+    score = f1_score(test_data['image_category'], prediction,
+                     average='macro')
+    print('F1 score: ' + str(score))
 
 
 if __name__ == '__main__':
