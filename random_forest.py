@@ -3,6 +3,7 @@
 
 from argparse import ArgumentParser
 from lib.io import read_data
+from lib.score import calculate_scores
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score
 
@@ -12,9 +13,6 @@ def run(train_path, test_path):
     # Read input data
     train_data = read_data(train_path)
     test_data = read_data(test_path)
-
-    # Find all classes in test data
-    classes = sorted(set(train_data['image_category']))
 
     # Classification
     model = RandomForestClassifier(n_estimators=1000)
@@ -29,9 +27,12 @@ def run(train_path, test_path):
     # In the future, we should also measure scores for each class separately.
     # Currently, sometimes it can happen that there are no positives for a class
     # and the measure is ruined.
-    score = f1_score(test_data['image_category'], prediction,
-                     average='macro')
-    print('F1 score: ' + str(score))
+    scores, average_score = calculate_scores(test_data['image_category'],
+                                             prediction)
+    print('F1 scores per class')
+    for image_class, score in sorted(scores.items()):
+        print(str(image_class) + ': ' + str(score))
+    print('Average F1 score: ' + str(average_score))
 
 
 if __name__ == '__main__':
