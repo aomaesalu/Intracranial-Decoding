@@ -12,19 +12,23 @@ N=10
 # and create N different random partitions for analysis comparison.
 for (( i=1; i<=N; i++ ))
 do
+    printf '# Pipeline: Partitioning data (%d)\n' $i
     python2.7 ./partition_data.py data/stim_probe_category_ON_meangamma_bipolar_noscram_artif_brodmann_resppositive.pkl data/train-$i.pkl data/test-$i.pkl 80
+    printf '\n'
 done
 
 # Analysis: SVM
-# TODO
-#for (( i=1; i<=N; i++ ))
-#do
-#  python2.7 ./svm.py data/train-1.pkl data/test-1.pkl
-#done
+for (( i=1; i<=N; i++ ))
+do
+    printf '# Pipeline: SVM (%d)\n' $i
+    python2.7 ./svm.py data/train-1.pkl data/test-1.pkl
+    printf '\n'
+done
 
 # Analysis: Random forests
-# TODO
-#for (( i=1; i<=N; i++ ))
-#do
-#  python2.7 ./random_forest.py data/train-1.pkl data/test-1.pkl
-#done
+for (( i=1; i<=N; i++ ))
+do
+    printf '# Pipeline: Random forests (%d)\n' $i
+    python2.7 ./random_forest.py data/train-1.pkl data/test-1.pkl
+    printf '\n'
+done
