@@ -1,7 +1,12 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf8 -*-i
 
-from sklearn.metrics import f1_score
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+
+def pad(string, length, character=' '):
+    return str(string) + (length - len(str(string))) * character
+
 
 class Score(object):
 
@@ -13,7 +18,7 @@ class Score(object):
 
         # Initialise score variables
         self.scores = {}
-        self.average_score = {}
+        self.average_scores = {}
 
         # Find all classes in test data
         self.classes = sorted(set(true_values))
@@ -49,21 +54,44 @@ class Score(object):
 
         # Find the score for each class
         for image_class in self.classes:
-            self.scores[image_class] = f1_score(separated[image_class][0],
-                                                separated[image_class][1])
+            self.scores[image_class] = {
+                'precision': precision_score(separated[image_class][0],
+                                             separated[image_class][1]),
+                'recall': recall_score(separated[image_class][0],
+                                       separated[image_class][1]),
+                'f1': f1_score(separated[image_class][0],
+                               separated[image_class][1])
+            }
+
 
     def calculate_average(self):
 
-        # Calculate the average F1 score
+        # Calculate the average scores.
         # We are using macro averaging because it doesn't take class
         # distribution inbalance into account. Each class is as important as
         # another.
-        self.average_score = f1_score(self.true_values, self.predictions,
-                                      average='macro')
+        self.average_scores = {
+            'precision': precision_score(self.true_values, self.predictions,
+                                         average='macro'),
+            'recall': recall_score(self.true_values, self.predictions,
+                                   average='macro'),
+            'f1': f1_score(self.true_values, self.predictions, average='macro')
+        }
 
     def __str__(self):
-        output = 'F1 scores per class:\n'
-        for image_class, score in sorted(self.scores.items()):
-            output += '  ' + str(image_class) + ': ' + str(score) + '\n'
-        output += 'Average F1 score: ' + str(self.average_score)
+        methods = ['precision', 'recall', 'f1']
+        output = 'Scores per class:\n'
+        output += '    ' + pad('class', 8)
+        for method in methods:
+            output += pad(method, 16)
+        output += '\n'
+        for image_class, scores in sorted(self.scores.items()):
+            output += '    ' + pad(image_class, 8)
+            for method in methods:
+                output += pad(scores[method], 16)
+            output += '\n'
+        output += 'Average scores:\n'
+        for method in methods:
+            output += '    ' + pad(method, 16) + \
+                      pad(self.average_scores[method], 16) + '\n'
         return output
