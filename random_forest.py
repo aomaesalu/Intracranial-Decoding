@@ -16,6 +16,25 @@ def run(train_path, test_path):
     train_data = read_data(train_path)
     test_data = read_data(test_path)
 
+    # for i in range(len(train_data['image_category'])):
+    #     if train_data['image_category'][i] != 80:
+    #         train_data['image_category'][i] = 0
+    # for i in range(len(test_data['image_category'])):
+    #     if test_data['image_category'][i] != 80:
+    #         test_data['image_category'][i] = 0
+    #
+    # faces = []
+    # for i in range(len(train_data['image_category'])):
+    #     if train_data['image_category'][i] == 80:
+    #         faces.append(i)
+    #
+    # while len(train_data['image_category']) <= 5000:
+    #     for i in faces:
+    #         train_data['image_category'].append(train_data['image_category'][i])
+    #         train_data['neural_responses'].append(train_data['neural_responses'][i])
+    #         if len(train_data['image_category']) > 5000:
+    #             break
+
     # counter = Counter(train_data['areas'])
     # removed_areas = set()
     # for key, value in counter.items():
@@ -57,7 +76,7 @@ def run(train_path, test_path):
     # print(len(train_data['neural_responses'][0]))
 
     # Classification
-    model = ExtraTreesClassifier(n_estimators=1000, max_features=1)
+    model = RandomForestClassifier(n_estimators=2000)#, max_features=10, max_leaf_nodes=15, max_depth=5)
     model.fit(train_data['neural_responses'], train_data['image_category'])
 
     # Prediction
