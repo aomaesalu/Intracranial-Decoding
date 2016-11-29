@@ -21,7 +21,7 @@ done
 for (( i=1; i<=N; i++ ))
 do
     printf '# Pipeline: SVM (%d)\n' $i
-    python2.7 ./svm.py data/train-1.pkl data/test-1.pkl
+    python2.7 ./svm.py data/train-$i.pkl data/test-$i.pkl
     printf '\n'
 done
 
@@ -29,6 +29,6 @@ done
 for (( i=1; i<=N; i++ ))
 do
     printf '# Pipeline: Random forests (%d)\n' $i
-    python2.7 ./random_forest.py data/train-1.pkl data/test-1.pkl
+    python2.7 ./random_forest.py data/train-$i.pkl data/test-$i.pkl
     printf '\n'
 done
