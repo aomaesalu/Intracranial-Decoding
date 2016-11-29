@@ -3,7 +3,6 @@
 
 from argparse import ArgumentParser
 from lib.io import read_data
-from lib.brain_data import get_classes
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score
 
@@ -15,7 +14,7 @@ def run(train_path, test_path):
     test_data = read_data(test_path)
 
     # Find all classes in test data
-    classes = get_classes(test_data)
+    classes = sorted(set(train_data['image_category']))
 
     # Classification
     model = RandomForestClassifier(n_estimators=1000)
