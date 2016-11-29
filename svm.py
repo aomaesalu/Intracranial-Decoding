@@ -7,7 +7,7 @@ from sklearn import svm
 
 
 def run(train_path, test_path):
-    
+
     # Read input data
     train_data = read_data(train_path)
     test_data = read_data(test_path)
@@ -16,10 +16,11 @@ def run(train_path, test_path):
     svcClassif = svm.SVC()
     print('Fitting training samples to create a training model...')
 
-    #TODO not sure if this is the correct type of data that should be used for fitting, but this
-    #should be the general sequence of the classification
+    # TODO not sure if this is the correct type of data that should be used for
+    # fitting, but this should be the general sequence of the classification
 
-    #first parameter: array of size [n_samples, n_features], second parameter: array of size [n_samples]
+    # First parameter: array of size [n_samples, n_features], second parameter:
+    # array of size [n_samples]
     svcClassif.fit(train_data['neural_responses'], train_data['image_category'])
     print('Performing classification on test samples...')
     results=svcClassif.predict(test_data['neural_responses'])
@@ -37,5 +38,5 @@ if __name__ == '__main__':
                                            file path')
     ARGUMENTS = PARSER.parse_args()
 
-    # Run the data partition script
+    # Run the data classification script
     run(ARGUMENTS.train_path, ARGUMENTS.test_path)
