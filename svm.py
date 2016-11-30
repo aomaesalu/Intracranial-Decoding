@@ -8,14 +8,15 @@ from sklearn import svm
 # TODO: Tune model
 
 
-def run(data_path, cv_amount, cv_iterations):
+def run(data_path, partitions, iterations):
 
     # Define classification model
     model = svm.SVC()
 
     # Classify, predict and calculate the confusion matrix and scores
-    confusion_matrix, scores = classify(data_path, cv_amount, cv_iterations,
+    confusion_matrix, scores = classify(data_path, partitions, iterations,
                                         model)
+
     # Output model results
     print(confusion_matrix)
     print(scores)
@@ -26,11 +27,11 @@ if __name__ == '__main__':
     # Parse command line arguments
     PARSER = ArgumentParser()
     PARSER.add_argument('data_path', help='the pickled data file path')
-    PARSER.add_argument('cv_amount', help='the amount of equal sized data ' +
+    PARSER.add_argument('partitions', help='the amount of equal sized data ' +
                         'sets created upon partitioning the data', type=int)
-    PARSER.add_argument('cv_iterations', help='the amount of times to ' +
-                        'perform k-fold cross-validation', type=int)
+    PARSER.add_argument('iterations', help='the amount of times to perform ' +
+                        'k-fold cross-validation', type=int)
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
-    run(ARGUMENTS.data_path, ARGUMENTS.cv_amount, ARGUMENTS.cv_iterations)
+    run(ARGUMENTS.data_path, ARGUMENTS.partitions, ARGUMENTS.iterations)

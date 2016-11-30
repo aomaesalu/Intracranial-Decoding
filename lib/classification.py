@@ -7,28 +7,28 @@ from lib.cross_validation import construct_data_sets
 from lib.score import ConfusionMatrix, Score
 
 
-def classify(data_path, cv_amount, cv_iterations, model):
+def classify(data_path, partitions, iterations, model):
 
     # Initialise the true value and prediction lists
     true_values = []
     predictions = []
 
     # Repeat cross-validation a set amount of times
-    for iteration in range(cv_iterations):
+    for iteration in range(iterations):
 
         # Read input data
         data = []
-        for partition in range(cv_amount):
+        for partition in range(partitions):
             data.append(read_data(format_path(format_path(data_path,
                                                           iteration + 1),
                                               partition + 1)))
 
         # Iterate through all of the data sets, using each of them for test data
         # exactly once, and using all others as training data sets at the same
-        for test_index in range(cv_amount):
+        for test_index in range(partitions):
 
             # Construct training and test data sets
-            train_data, test_data = construct_data_sets(data, cv_amount,
+            train_data, test_data = construct_data_sets(data, partitions,
                                                         test_index)
 
             # Classification
