@@ -132,7 +132,7 @@ class Score(object):
             output += '    ' + pad(image_class, 8)
             for method in methods:
                 output += pad(scores[method], 16)
-            output += '\n'
+            output += '\n\n'
         output += 'Average scores:\n'
         for method in methods:
             output += '    ' + pad(method, 16) + \
