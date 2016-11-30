@@ -4,6 +4,7 @@
 from argparse import ArgumentParser
 from random import shuffle
 from lib.io import read_data, write_data
+from lib.string import format_path
 
 
 def partition_list(data, amount):
@@ -18,16 +19,6 @@ def partition_list(data, amount):
     # sorted format
     return [sorted(data[int(round(size * i)) : int(round(size * (i + 1)))])
             for i in range(amount)]
-
-
-def format_path(path, number):
-
-    # Split the path by points to find the file extension
-    path = path.split('.')
-
-    # Add the number just before the file extension, and return the updated
-    # file path
-    return '.'.join(path[:-1]) + '-' + str(number) + '.' + path[-1]
 
 
 
@@ -93,8 +84,8 @@ def run(input_path, output_path, cv_amount, use_even_distribution):
             'areas': data['areas'],
             'image_category': [data['image_category'][j]
                                for j in partitioned_indices[i]],
-           'neural_responses': [data['neural_responses'][j]
-                                for j in partitioned_indices[i]]
+            'neural_responses': [data['neural_responses'][j]
+                                 for j in partitioned_indices[i]]
         })
 
     # Save partitioned data
