@@ -2,11 +2,27 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
-from random import sample
+from random import shuffle
 from lib.io import read_data, write_data
+from lib.string import format_path
 
 
-def run(input_path, train_path, test_path, train_size, is_even):
+def partition_list(data, amount):
+
+    # Shuffle the list
+    shuffle(data)
+
+    # Find the average partition size
+    size = len(data) / float(amount)
+
+    # Partition the list into k equal parts, and return each of them in a
+    # sorted format
+    return [sorted(data[int(round(size * i)) : int(round(size * (i + 1)))])
+            for i in range(amount)]
+
+
+
+def run(input_path, output_path, cv_amount, use_even_distribution):
 
     # Read the data set
     data = read_data(input_path)
@@ -17,42 +33,64 @@ def run(input_path, train_path, test_path, train_size, is_even):
     # Find all image classes in the data set
     classes = sorted(set(data['image_category']))
 
-    # Construct a list of indices of appropriate images for each image class
-    index_lists = {}
-    for image_class in classes:
-        index_lists[image_class] = []
-    for i in range(number_of_images):
-        index_lists[data['image_category'][i]].append(i)
+    # Initialise the list of partitioned indices
+    partitioned_indices = [[] for i in range(cv_amount)]
 
-    # Generate the training set indices
-    train_indices = []
-    for image_class in classes:
-        images_in_class = len(index_lists[image_class])
-        train_indices += sample(index_lists[image_class], \
-                                int(images_in_class * float(train_size) / 100))
-    train_indices.sort()
+    # If even distribution is set to be used, partition data within each class
+    # separately and merge the resulting partitions into the partitioned
+    # indices list, so the image class distribution in each partition would be
+    # roughly the same.
+    if use_even_distribution:
 
-    # Calculate the test set indices
-    test_indices = sorted(list(set(range(number_of_images)) \
-                               - set(train_indices)))
+        # Construct a list of image indices corresponding to each image class
+        indices = {}
+        for image_class in classes:
+            indices[image_class] = []
+        for i in range(number_of_images):
+            indices[data['image_category'][i]].append(i)
+
+        # Randomly split each of these lists into k nearly equal parts, and
+        # merge them by partitions
+        for image_class in classes:
+
+            # Partition the indices list for the current image class into k
+            # nearly equal parts
+            partitions_list = partition_list(indices[image_class], cv_amount)
+
+            # Shuffle the partition list to ensure that cumulative partitions
+            # after merging by partitions are roughly of equal size
+            shuffle(partitions_list)
+
+            # Merge the partitioned indices list for the current image class
+            # into the general partitioned indices list by partitions
+            for i in range(cv_amount):
+                partitioned_indices[i] += partitions_list[i]
+
+    # If even distribution is not set to be used, partition data randomly.
+    else:
+
+        # Partition the indices list into k nearly equal parts
+        partitioned_indices = partition_list(range(number_of_images), cv_amount)
+
+    # Sort all of the partitions
+    for partition in partitioned_indices:
+        partition.sort()
 
     # Partition data
-    train_data = {
-        'subjects': data['subjects'],
-        'areas': data['areas'],
-        'image_category': [data['image_category'][i] for i in train_indices],
-        'neural_responses': [data['neural_responses'][i] for i in train_indices]
-    }
-    test_data = {
-        'subjects': data['subjects'],
-        'areas': data['areas'],
-        'image_category': [data['image_category'][i] for i in test_indices],
-        'neural_responses': [data['neural_responses'][i] for i in test_indices]
-    }
+    partitions = []
+    for i in range(cv_amount):
+        partitions.append({
+            'subjects': data['subjects'],
+            'areas': data['areas'],
+            'image_category': [data['image_category'][j]
+                               for j in partitioned_indices[i]],
+            'neural_responses': [data['neural_responses'][j]
+                                 for j in partitioned_indices[i]]
+        })
 
-    # Save data
-    write_data(train_path, train_data)
-    write_data(test_path, test_data)
+    # Save partitioned data
+    for i in range(cv_amount):
+        write_data(format_path(output_path, i + 1), partitions[i])
 
 
 if __name__ == '__main__':
@@ -60,16 +98,15 @@ if __name__ == '__main__':
     # Parse command line arguments
     PARSER = ArgumentParser()
     PARSER.add_argument('input_path', help='the pickled input data file ' +
-                        'containing the neural responses data')
-    PARSER.add_argument('train_path', help='the pickled output training data ' +
-                        'file path')
-    PARSER.add_argument('test_path', help='the pickled output testing data ' +
-                        'file path')
-    PARSER.add_argument('train_size', help='the size of the training data set')
+                        'path containing the neural responses data')
+    PARSER.add_argument('output_path', help='the pickled output data file ' +
+                        'path')
+    PARSER.add_argument('cv_amount', help='the amount of equal sized data ' +
+                        'sets created upon partitioning the data', type=int)
     PARSER.add_argument('--even', help='ensure that the distribution of ' +
                         'classes in partitions is even', action='store_true')
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data partition script
-    run(ARGUMENTS.input_path, ARGUMENTS.train_path, ARGUMENTS.test_path,
-        ARGUMENTS.train_size, ARGUMENTS.even)
+    run(ARGUMENTS.input_path, ARGUMENTS.output_path, ARGUMENTS.cv_amount,
+        ARGUMENTS.even)
