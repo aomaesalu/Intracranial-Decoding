@@ -133,6 +133,7 @@ class Score(object):
             for method in methods:
                 output += pad(scores[method], 16)
             output += '\n'
+        output += '\n'
         output += 'Average scores:\n'
         for method in methods:
             output += '    ' + pad(method, 16) + \

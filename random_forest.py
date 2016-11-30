@@ -6,7 +6,7 @@ from lib.io import read_data
 from lib.string import format_path
 from lib.cross_validation import construct_data_sets
 from lib.score import ConfusionMatrix, Score
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 
 def run(data_path, cv_amount):
@@ -28,7 +28,11 @@ def run(data_path, cv_amount):
         train_data, test_data = construct_data_sets(data, cv_amount, test_index)
 
         # Classification
-        model = RandomForestClassifier(n_estimators=500)#, max_features=10, max_leaf_nodes=15, max_depth=5)
+        # Possible additional parameters:
+        #   max_features=10
+        #   max_leaf_nodes=15
+        #   max_depth=5
+        model = RandomForestClassifier(n_estimators=500)
         model.fit(train_data['neural_responses'], train_data['image_category'])
 
         # Prediction
@@ -44,6 +48,7 @@ def run(data_path, cv_amount):
     score = Score(true_values, predictions)
     print(confusion_matrix)
     print(score)
+
 
 if __name__ == '__main__':
 

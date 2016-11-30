@@ -27,17 +27,12 @@ def run(data_path, cv_amount):
         # Construct training and test data sets
         train_data, test_data = construct_data_sets(data, cv_amount, test_index)
 
-        svcClassif = svm.SVC()
+        # Classification
+        model = svm.SVC()
+        model.fit(train_data['neural_responses'], train_data['image_category'])
 
-        # TODO not sure if this is the correct type of data that should be used
-        # for fitting, but this should be the general sequence of the
-        # classification
-
-        # First parameter: array of size [n_samples, n_features], second
-        # parameter: array of size [n_samples]
-        svcClassif.fit(train_data['neural_responses'],
-                       train_data['image_category'])
-        prediction = svcClassif.predict(test_data['neural_responses'])
+        # Prediction
+        prediction = model.predict(test_data['neural_responses'])
 
         # Append the true values and predictions to the corresponding general
         # lists for later scoring
