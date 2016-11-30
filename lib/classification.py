@@ -1,10 +1,10 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf8 -*-i
 
-from lib.io import read_data
-from lib.string import format_path
-from lib.cross_validation import construct_data_sets
-from lib.score import ConfusionMatrix, Score
+from .io import read_data
+from .string import format_path
+from .cross_validation import construct_data_sets
+from .score import ConfusionMatrix, Score
 
 
 def classify(data_path, partitions, iterations, model):

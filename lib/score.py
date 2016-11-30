@@ -1,8 +1,8 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf8 -*-i
 
+from .string import pad
 from sklearn.metrics import precision_score, recall_score, f1_score
-from string import pad
 
 # TODO: Use the confusion matrix in scoring
 
