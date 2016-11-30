@@ -22,12 +22,12 @@ N=5
 k=10
 
 # Data partitioning. We use stratified k-fold cross-validation N times.
+printf '# Pipeline: Partitioning data %d times into %d equal sets\n' $N $k
 for (( i=1; i<=N; i++ ))
 do
-    printf '# Pipeline: Partitioning data (%d)\n' $i
     python2.7 ./partition_data.py $data_file $partition_file_name'-'$i'.'$partition_file_extension $k --even
-    printf '\n'
 done
+printf '\n'
 
 # Analysis: SVM
 printf '# Pipeline: SVM\n'
