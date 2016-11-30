@@ -64,27 +64,29 @@ def run(input_path, output_path, cv_amount, use_even_distribution):
 
             # Partition the indices list for the current image class into k
             # nearly equal parts
-            partitions = partition_list(indices[image_class], cv_amount)
+            partitions_list = partition_list(indices[image_class], cv_amount)
 
-            # Shuffle the partitions list to ensure that cumulative partitions
+            # Shuffle the partition list to ensure that cumulative partitions
             # after merging by partitions are roughly of equal size
-            shuffle(partitions)
+            shuffle(partitions_list)
 
             # Merge the partitioned indices list for the current image class
             # into the general partitioned indices list by partitions
             for i in range(cv_amount):
-                partitioned_indices[i] += partitions[i]
+                partitioned_indices[i] += partitions_list[i]
 
     # If even distribution is not set to be used, partition data randomly.
     else:
 
-        pass # TODO
+        # Partition the indices list into k nearly equal parts
+        partitioned_indices = partition_list(range(number_of_images), cv_amount)
 
     # Sort all of the partitions
     for partition in partitioned_indices:
         partition.sort()
 
     # Partition data
+    partitions = []
     for i in range(cv_amount):
         partitions.append({
             'subjects': data['subjects'],
@@ -108,8 +110,8 @@ if __name__ == '__main__':
                         'path containing the neural responses data')
     PARSER.add_argument('output_path', help='the pickled output data file ' +
                         'path')
-    PARSER.add_argument('cv_amount', help='how many equal sized data sets ' +
-                        'are created', type=int)
+    PARSER.add_argument('cv_amount', help='the amount of equal sized data ' +
+                        'sets created upon partitioning the data', type=int)
     PARSER.add_argument('--even', help='ensure that the distribution of ' +
                         'classes in partitions is even', action='store_true')
     ARGUMENTS = PARSER.parse_args()
