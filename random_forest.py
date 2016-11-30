@@ -4,6 +4,7 @@
 from argparse import ArgumentParser
 from lib.io import read_data
 from lib.string import format_path
+from lib.cross_validation import construct_data_sets
 from lib.score import ConfusionMatrix, Score
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 
@@ -20,18 +21,7 @@ def run(data_path, cv_amount):
     for test_index in range(cv_amount):
 
         # Construct training and test data sets
-        train_data = {
-            'subjects': data[0]['subjects'],
-            'areas': data[0]['areas'],
-            'image_category': [],
-            'neural_responses': []
-        }
-        for i in range(cv_amount):
-            if i == test_index:
-                continue
-            for field in ['image_category', 'neural_responses']:
-                train_data[field] += data[i][field]
-        test_data = data[test_index]
+        train_data, test_data = construct_data_sets(data, cv_amount, test_index)
 
         # Classification
         model = RandomForestClassifier(n_estimators=500)#, max_features=10, max_leaf_nodes=15, max_depth=5)
