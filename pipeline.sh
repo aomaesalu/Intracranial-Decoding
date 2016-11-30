@@ -15,11 +15,11 @@ printf '# Pipeline: Descriptive analysis\n'
 python2.7 ./descriptive_analysis.py $data_file
 printf '\n'
 
-# Set how many times to perform cross-validation.
-N=5
-
 # Set how many equal parts to partition the data into.
 k=10
+
+# Set how many times to perform cross-validation.
+N=5
 
 # Data partitioning. We use stratified k-fold cross-validation N times.
 printf '# Pipeline: Partitioning data %d times into %d equal sets\n' $N $k
