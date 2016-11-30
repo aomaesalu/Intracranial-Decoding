@@ -16,6 +16,10 @@ def run(data_path, cv_amount):
     for i in range(cv_amount):
         data.append(read_data(format_path(data_path, i + 1)))
 
+    # Initialise the true value and prediction lists
+    true_values = []
+    predictions = []
+
     # Iterate through all of the data sets, using each of them for test data
     # exactly once, and using all others as training data sets at the same
     for test_index in range(cv_amount):
@@ -30,12 +34,16 @@ def run(data_path, cv_amount):
         # Prediction
         prediction = model.predict(test_data['neural_responses'])
 
-        # Scoring
-        confusion_matrix = ConfusionMatrix(test_data['image_category'],
-                                           prediction)
-        print(confusion_matrix)
-        score = Score(test_data['image_category'], prediction)
-        print(score)
+        # Append the true values and predictions to the corresponding general
+        # lists for later scoring
+        true_values += test_data['image_category']
+        predictions += list(prediction)
+
+    # Scoring
+    confusion_matrix = ConfusionMatrix(true_values, predictions)
+    score = Score(true_values, predictions)
+    print(confusion_matrix)
+    print(score)
 
 if __name__ == '__main__':
 
