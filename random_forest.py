@@ -9,39 +9,46 @@ from lib.score import ConfusionMatrix, Score
 from sklearn.ensemble import RandomForestClassifier
 
 
-def run(data_path, cv_amount):
-
-    # Read input data
-    data = []
-    for i in range(cv_amount):
-        data.append(read_data(format_path(data_path, i + 1)))
+def run(data_path, cv_amount, cv_iterations):
 
     # Initialise the true value and prediction lists
     true_values = []
     predictions = []
 
-    # Iterate through all of the data sets, using each of them for test data
-    # exactly once, and using all others as training data sets at the same
-    for test_index in range(cv_amount):
+    # Repeat cross-validation a set amount of times
+    for iteration in range(cv_iterations):
 
-        # Construct training and test data sets
-        train_data, test_data = construct_data_sets(data, cv_amount, test_index)
+        # Read input data
+        data = []
+        for partition in range(cv_amount):
+            data.append(read_data(format_path(format_path(data_path,
+                                                          iteration + 1),
+                                              partition + 1)))
 
-        # Classification
-        # Possible additional parameters:
-        #   max_features=10
-        #   max_leaf_nodes=15
-        #   max_depth=5
-        model = RandomForestClassifier(n_estimators=500)
-        model.fit(train_data['neural_responses'], train_data['image_category'])
+        # Iterate through all of the data sets, using each of them for test data
+        # exactly once, and using all others as training data sets at the same
+        for test_index in range(cv_amount):
 
-        # Prediction
-        prediction = model.predict(test_data['neural_responses'])
+            # Construct training and test data sets
+            train_data, test_data = construct_data_sets(data, cv_amount,
+                                                        test_index)
 
-        # Append the true values and predictions to the corresponding general
-        # lists for later scoring
-        true_values += test_data['image_category']
-        predictions += list(prediction)
+            # Classification
+            # Possible additional parameters:
+            #   max_features=10
+            #   max_leaf_nodes=15
+            #   max_depth=5
+            model = RandomForestClassifier(n_estimators=200)
+            model.fit(train_data['neural_responses'],
+                      train_data['image_category'])
+
+            # Prediction
+            prediction = model.predict(test_data['neural_responses'])
+
+            # Append the true values and predictions to the corresponding
+            # general lists for later scoring
+            true_values += test_data['image_category']
+            predictions += list(prediction)
 
     # Scoring
     confusion_matrix = ConfusionMatrix(true_values, predictions)
@@ -57,7 +64,9 @@ if __name__ == '__main__':
     PARSER.add_argument('data_path', help='the pickled data file path')
     PARSER.add_argument('cv_amount', help='the amount of equal sized data ' +
                         'sets created upon partitioning the data', type=int)
+    PARSER.add_argument('cv_iterations', help='the amount of times to ' +
+                        'perform k-fold cross-validation', type=int)
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
-    run(ARGUMENTS.data_path, ARGUMENTS.cv_amount)
+    run(ARGUMENTS.data_path, ARGUMENTS.cv_amount, ARGUMENTS.cv_iterations)

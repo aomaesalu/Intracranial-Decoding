@@ -16,9 +16,9 @@ python2.7 ./descriptive_analysis.py $data_file
 printf '\n'
 
 # Set how many times to perform cross-validation.
-N=10
+N=5
 
-# Set into how many equal parts to partition the data.
+# Set how many equal parts to partition the data into.
 k=10
 
 # Data partitioning. We use stratified k-fold cross-validation N times.
@@ -36,5 +36,5 @@ printf '\n'
 
 # Analysis: SVM
 printf '# Pipeline: Random forests\n'
-python2.7 ./random_forest.py $partition_file $N $k
+python2.7 ./random_forest.py $partition_file $k $N
 printf '\n'
