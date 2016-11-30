@@ -3,6 +3,7 @@
 
 from argparse import ArgumentParser
 from lib.io import read_data
+from lib.string import format_path
 from lib.score import ConfusionMatrix, Score
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 
@@ -10,11 +11,12 @@ from collections import Counter
 import numpy as np
 
 
-def run(train_path, test_path):
+def run(data_path, cv_amount):
 
     # Read input data
-    train_data = read_data(train_path)
-    test_data = read_data(test_path)
+    data = []
+    for i in range(cv_amount):
+        data.append(read_data(format_path(data_path, i + 1)))
 
     # for i in range(len(train_data['image_category'])):
     #     if train_data['image_category'][i] != 80:
@@ -75,28 +77,27 @@ def run(train_path, test_path):
     #
     # print(len(train_data['neural_responses'][0]))
 
-    # Classification
-    model = RandomForestClassifier(n_estimators=2000)#, max_features=10, max_leaf_nodes=15, max_depth=5)
-    model.fit(train_data['neural_responses'], train_data['image_category'])
-
-    # Prediction
-    prediction = model.predict(test_data['neural_responses'])
-
-    # Scoring
-    confusion_matrix = ConfusionMatrix(test_data['image_category'], prediction)
-    print(confusion_matrix)
-    score = Score(test_data['image_category'], prediction)
-    print(score)
+    # # Classification
+    # model = RandomForestClassifier(n_estimators=2000)#, max_features=10, max_leaf_nodes=15, max_depth=5)
+    # model.fit(train_data['neural_responses'], train_data['image_category'])
+    #
+    # # Prediction
+    # prediction = model.predict(test_data['neural_responses'])
+    #
+    # # Scoring
+    # confusion_matrix = ConfusionMatrix(test_data['image_category'], prediction)
+    # print(confusion_matrix)
+    # score = Score(test_data['image_category'], prediction)
+    # print(score)
 
 if __name__ == '__main__':
 
     # Parse command line arguments
     PARSER = ArgumentParser()
-    PARSER.add_argument('train_path', help='the pickled input training data ' +
-                                           'file path')
-    PARSER.add_argument('test_path', help='the pickled input testing data ' +
-                                          'file path')
+    PARSER.add_argument('data_path', help='the pickled data file path')
+    PARSER.add_argument('cv_amount', help='the amount of equal sized data ' +
+                        'sets created upon partitioning the data', type=int)
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
-    run(ARGUMENTS.train_path, ARGUMENTS.test_path)
+    run(ARGUMENTS.data_path, ARGUMENTS.cv_amount)
