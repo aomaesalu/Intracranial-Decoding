@@ -98,8 +98,22 @@ class Result(object):
 
 
     def average_scores_output(self):
-        output = str(self.average_scores) + '\n'
-        pass # TODO
+
+        # Define scoring methods used
+        methods = ['precision', 'recall', 'f1']
+
+        # Add the title of the output
+        output = 'Average scores:\n'
+
+        # Add the header row
+        output += pad('', 14) + pad('score', 16) + '\n'
+
+        # Add the table itself
+        for i in range(len(methods)):
+            output += pad('', 4) + pad(methods[i], 10) + \
+                      pad(self.average_scores[i], 16) + '\n'
+
+        # Return the output string
         return output
 
 
