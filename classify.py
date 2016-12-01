@@ -35,7 +35,7 @@ def run(method, data_path, partitions, iterations):
 
     # Classify, predict and calculate the confusion matrix and scores
     confusion_matrix, scores = classify(data_path, partitions, iterations,
-                                        model)#, parameters)
+                                        model)#, parameters, trials)
 
     # Output model results
     print(confusion_matrix)
@@ -52,6 +52,8 @@ if __name__ == '__main__':
                         'sets created upon partitioning the data', type=int)
     PARSER.add_argument('iterations', help='the amount of times to perform ' +
                         'k-fold cross-validation', type=int)
+    # PARSER.add_argument('trials', help='the amount of trials with different ' +
+    #                     'randomly generated parameters')
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
