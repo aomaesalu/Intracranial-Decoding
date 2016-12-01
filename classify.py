@@ -34,12 +34,11 @@ def run(method, data_path, partitions, iterations):
         }
 
     # Classify, predict and calculate the confusion matrix and scores
-    result = classify(data_path, partitions, iterations, model)#, parameters, trials)
+    result = classify(data_path, partitions, iterations, model)#, parameters,
+                      #trials)
 
     # Output model results
-    print(result.confusion_matrix)
-    print(result.scores_per_class)
-    print(result.average_scores)
+    print(result)
 
 
 if __name__ == '__main__':

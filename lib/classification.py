@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-i
 
 from .io import read_data
-from .string import add_suffix_to_path
+from .string import pad, add_suffix_to_path
 from .cross_validation import construct_data_sets
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
@@ -48,6 +48,38 @@ class Result(object):
         # distribution inbalance into account. Each class is as important as
         # another.
         self.average_scores = precision_recall_fscore_support(self.true_values, self.predicted_values, labels=self.classes, average='macro')
+
+
+    def confusion_matrix_output(self):
+        output = 'Confusion matrix:\n'
+        output += pad('', 4) + pad('', 8)
+        for class_label in self.classes:
+            output += pad(class_label, 8)
+        output += '\n'
+        for i in range(len(self.classes)):
+            output += pad('', 4) + pad(self.classes[i], 8)
+            for j in range(len(self.classes)):
+                output += pad(self.confusion_matrix[i][j], 8)
+            output += '\n'
+        return output
+
+
+    def scores_per_class_output(self):
+        output = str(self.scores_per_class) + '\n'
+        pass # TODO
+        return output
+
+
+    def average_scores_output(self):
+        output = str(self.average_scores) + '\n'
+        pass # TODO
+        return output
+
+
+    def __str__(self):
+        return self.confusion_matrix_output() + '\n' + \
+               self.scores_per_class_output() + '\n' + \
+               self.average_scores_output()
 
 
 def classify(data_path, partitions, iterations, model):
