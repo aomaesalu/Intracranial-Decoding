@@ -90,7 +90,7 @@ def run(input_path, output_path, cv_amount, use_even_distribution):
 
     # Save partitioned data
     for i in range(cv_amount):
-        write_data(add_suffix_to_path(output_path, i + 1), partitions[i])
+        write_data(add_suffix_to_path(output_path, '-', i + 1), partitions[i])
 
 
 if __name__ == '__main__':
