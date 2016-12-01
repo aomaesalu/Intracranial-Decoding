@@ -105,10 +105,7 @@ class Result(object):
         # Add the title of the output
         output = 'Average scores:\n'
 
-        # Add the header row
-        output += pad('', 14) + pad('score', 16) + '\n'
-
-        # Add the table itself
+        # Add the table
         for i in range(len(methods)):
             output += pad('', 4) + pad(methods[i], 10) + \
                       pad(self.average_scores[i], 16) + '\n'
