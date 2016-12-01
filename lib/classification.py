@@ -6,8 +6,17 @@ from .string import add_suffix_to_path
 from .cross_validation import construct_data_sets
 from .score import ConfusionMatrix, Score
 
+from sklearn.metrics import f1_score
+from sklearn.metrics import make_scorer
+from sklearn.model_selection._search import RandomizedSearchCV
 
-def classify(data_path, partitions, iterations, model):
+
+def classify(data_path, partitions, iterations, model, search_params, search_iterations):
+
+    # Randomized parameter search
+    f1_scorer = make_scorer(f1_score, average='macro')
+    search = RandomizedSearchCV(estimator=model, param_distributions=search_params,
+                                n_iter=search_iterations, scoring=f1_scorer, refit=True)
 
     # Initialise the true value and prediction lists
     true_values = []
@@ -32,11 +41,11 @@ def classify(data_path, partitions, iterations, model):
                                                         test_index)
 
             # Classification
-            model.fit(train_data['neural_responses'],
+            search.fit(train_data['neural_responses'],
                       train_data['image_category'])
 
             # Prediction
-            prediction = model.predict(test_data['neural_responses'])
+            prediction = search.predict(test_data['neural_responses'])
 
             # Append the true values and predictions to the corresponding
             # general lists for later scoring
