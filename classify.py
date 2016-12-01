@@ -11,6 +11,7 @@ from scipy.stats import randint as sp_randint
 # TODO: Tune model
 
 def run(method, data_path, partitions, iterations):
+
     # Define classification model based on the method passed to the algorithm
     model = None
     if method == 'svm':
@@ -39,11 +40,11 @@ def run(method, data_path, partitions, iterations):
     search_iterations = 1
 
     # Classify, predict and calculate the confusion matrix and scores
-    confusion_matrix, scores = classify(data_path, partitions, iterations,
-                                        model, search_params, search_iterations)
+    result = classify(data_path, partitions, iterations, model, search_params,
+                      search_iterations)
 
-    print(confusion_matrix)
-    print(scores)
+    # Output model results
+    print(result)
 
 if __name__ == '__main__':
     # Parse command line arguments
