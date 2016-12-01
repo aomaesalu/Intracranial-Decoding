@@ -12,7 +12,7 @@ partition_file_extension=${partition_file##*.}
 # pipeline, as the data set does not change, but it is still currently included
 # for the purposes of clarity.
 printf '# Pipeline: Descriptive analysis\n'
-python2.7 ./descriptive_analysis.py $data_file
+python ./descriptive_analysis.py $data_file
 printf '\n'
 
 # Set how many equal parts to partition the data into.
@@ -25,16 +25,16 @@ N=5
 printf '# Pipeline: Partitioning data %d times into %d equal sets\n' $N $k
 for (( i=1; i<=N; i++ ))
 do
-    python2.7 ./partition_data.py $data_file $partition_file_name'-'$i'.'$partition_file_extension $k --even
+    python ./partition_data.py $data_file $partition_file_name'-'$i'.'$partition_file_extension $k --even
 done
 printf '\n'
 
 # Analysis: SVM
 printf '# Pipeline: SVM\n'
-python2.7 ./svm.py $partition_file $k $N
+python ./svm.py $partition_file $k $N
 printf '\n'
 
 # Analysis: SVM
 printf '# Pipeline: Random forests\n'
-python2.7 ./random_forest.py $partition_file $k $N
+python ./random_forest.py $partition_file $k $N
 printf '\n'
