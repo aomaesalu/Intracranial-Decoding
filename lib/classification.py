@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-i
 
 from .io import read_data
-from .string import format_path
+from .string import add_suffix_to_path
 from .cross_validation import construct_data_sets
 from .score import ConfusionMatrix, Score
 
@@ -19,9 +19,9 @@ def classify(data_path, partitions, iterations, model):
         # Read input data
         data = []
         for partition in range(partitions):
-            data.append(read_data(format_path(format_path(data_path,
-                                                          iteration + 1),
-                                              partition + 1)))
+            file_path = add_suffix_to_path(data_path, '-', iteration + 1,
+                                           partition + 1)
+            data.append(read_data(file_path))
 
         # Iterate through all of the data sets, using each of them for test data
         # exactly once, and using all others as training data sets at the same

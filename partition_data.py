@@ -4,7 +4,7 @@
 from argparse import ArgumentParser
 from random import shuffle
 from lib.io import read_data, write_data
-from lib.string import format_path
+from lib.string import add_suffix_to_path
 
 
 def partition_list(data, amount):
@@ -90,7 +90,7 @@ def run(input_path, output_path, cv_amount, use_even_distribution):
 
     # Save partitioned data
     for i in range(cv_amount):
-        write_data(format_path(output_path, i + 1), partitions[i])
+        write_data(add_suffix_to_path(output_path, i + 1), partitions[i])
 
 
 if __name__ == '__main__':

@@ -6,11 +6,16 @@ def pad(string, length, character=' '):
     return str(string) + (length - len(str(string))) * character
 
 
-def format_path(path, number):
+def add_suffix_to_path(path, separator, *suffixes):
 
     # Split the path by points to find the file extension
-    path = path.split('.')
+    path_components = path.split('.')
 
-    # Add the number just before the file extension, and return the updated
-    # file path
-    return '.'.join(path[:-1]) + '-' + str(number) + '.' + path[-1]
+    # Change suffixes to strings
+    suffixes = [str(suffix) for suffix in suffixes]
+
+    # Add suffixes to the file name with the specified separator
+    path_components[-2] = '-'.join([path_components[-2], '-'.join(suffixes)])
+
+    # Join the path components in order, and return the resulting new path
+    return '.'.join(path_components)
