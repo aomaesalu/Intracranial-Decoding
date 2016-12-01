@@ -51,22 +51,49 @@ class Result(object):
 
 
     def confusion_matrix_output(self):
+
+        # Add the the title of the output
         output = 'Confusion matrix:\n'
-        output += pad('', 4) + pad('', 8)
+
+        # Add the header row
+        output += pad('', 16)
         for class_label in self.classes:
             output += pad(class_label, 8)
         output += '\n'
+
+        # Add the table itself
         for i in range(len(self.classes)):
             output += pad('', 4) + pad(self.classes[i], 8)
             for j in range(len(self.classes)):
                 output += pad(self.confusion_matrix[i][j], 8)
             output += '\n'
+
+        # Return the output string
         return output
 
 
     def scores_per_class_output(self):
-        output = str(self.scores_per_class) + '\n'
-        pass # TODO
+
+        # Define scoring methods used
+        methods = ['precision', 'recall', 'f1', 'support']
+
+        # Add the title of the output
+        output = 'Scores per class:\n'
+
+        # Add the header row
+        output += pad('', 14)
+        for class_label in self.classes:
+            output += pad(class_label, 16)
+        output += '\n'
+
+        # Add the table itself
+        for i in range(len(methods)):
+            output += pad('', 4) + pad(methods[i], 10)
+            for j in range(len(self.classes)):
+                output += pad(self.scores_per_class[i][j], 16)
+            output += '\n'
+
+        # Return the output string
         return output
 
 
