@@ -56,7 +56,7 @@ class Result(object):
         output = 'Confusion matrix:\n'
 
         # Add the header row
-        output += pad('', 16)
+        output += pad('', 12)
         for class_label in self.classes:
             output += pad(class_label, 8)
         output += '\n'
