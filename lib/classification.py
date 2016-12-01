@@ -4,54 +4,50 @@
 from .io import read_data
 from .string import add_suffix_to_path
 from .cross_validation import construct_data_sets
-#from .score import ConfusionMatrix, Score
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 
 class Result(object):
 
-    def __init__(self):#, labels):
-
-        # # Set the label list from the parameter passed to the constructor
-        # self.labels = labels
+    def __init__(self):
 
         # Intialise the true and predicted value lists
         self.true_values = []
         self.predicted_values = []
 
         # Initialise the result confusion matrix and scores per each class
+        self.classes = None
         self.confusion_matrix = None
         self.scores_per_class = None
         self.average_scores = None
 
 
-    def add_values(self, true_values, predictions):
+    def add_values(self, true_values, predicted_values):
 
         # Append the new true and predicted values to the existing lists
-        self.true_values.append(true_values)
-        self.predictions.append(predictions)
+        self.true_values += list(true_values)
+        self.predicted_values += list(predicted_values)
 
 
     def calculate(self):
 
+        # Find all classes in the results
+        self.classes = sorted(set(self.true_values) | \
+                              set(self.predicted_values))
+
         # Calculate the score matrix
         self.confusion_matrix = confusion_matrix(self.true_values,
-                                                 self.predicted_values)#,
-                                                 #self.labels)
+                                                 self.predicted_values,
+                                                 labels=self.classes)
 
         # Calculate the scores per each class
-        pass # TODO
+        self.scores_per_class = precision_recall_fscore_support(self.true_values, self.predicted_values)
 
         # Calculate the average score
         # We are using macro averaging because it doesn't take class
         # distribution inbalance into account. Each class is as important as
         # another.
-        score_labels = ['precision', 'recall', 'f1', 'support']
-        average_scores = precision_recall_fscore_support(self.true_values,
-                                                         self.predicted_values,
-                                                         average='macro')
-        for i in range(len(score_labels)):
-            self.average_scores[score_labels[i]] = average_scores[i]
+        self.average_scores = precision_recall_fscore_support(self.true_values, self.predicted_values, labels=self.classes, average='macro')
 
 
 def classify(data_path, partitions, iterations, model):
@@ -82,16 +78,13 @@ def classify(data_path, partitions, iterations, model):
                       train_data['image_category'])
 
             # Prediction
-            prediction = model.predict(test_data['neural_responses'])
+            predicted_values = model.predict(test_data['neural_responses'])
 
-            # Append the true values and predictions to the corresponding
-            # general lists for later scoring
-            true_values += test_data['image_category']
-            predictions += list(prediction)
+            # Add the true and predicted values to the result
+            result.add_values(test_data['image_category'], predicted_values)
 
-    # Scoring
-    confusion_matrix = ConfusionMatrix(true_values, predictions)
-    score = Score(true_values, predictions)
+    # Calculate the confusion matrix and the scores for each class
+    result.calculate()
 
     # Return results
-    return confusion_matrix, score
+    return result

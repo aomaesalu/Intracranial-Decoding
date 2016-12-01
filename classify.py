@@ -26,7 +26,7 @@ def run(method, data_path, partitions, iterations):
     elif method == 'random_forest':
 
         # Define model
-        model = RandomForestClassifier()
+        model = RandomForestClassifier(n_estimators=500)
 
         # Define model parameters with their specified ranges
         parameters = {
@@ -34,12 +34,12 @@ def run(method, data_path, partitions, iterations):
         }
 
     # Classify, predict and calculate the confusion matrix and scores
-    confusion_matrix, scores = classify(data_path, partitions, iterations,
-                                        model)#, parameters, trials)
+    result = classify(data_path, partitions, iterations, model)#, parameters, trials)
 
     # Output model results
-    print(confusion_matrix)
-    print(scores)
+    print(result.confusion_matrix)
+    print(result.scores_per_class)
+    print(result.average_scores)
 
 
 if __name__ == '__main__':
