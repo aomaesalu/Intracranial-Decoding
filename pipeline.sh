@@ -37,10 +37,10 @@ printf '\n'
 
 # Analysis: SVM
 printf '# Pipeline: SVM\n'
-python ./svm.py $partition_file $k $N
+python ./classify.py svm $partition_file $k $N
 printf '\n'
 
 # Analysis: SVM
 printf '# Pipeline: Random forests\n'
-python ./random_forest.py $partition_file $k $N
+python ./classify.py random_forest $partition_file $k $N
 printf '\n'
