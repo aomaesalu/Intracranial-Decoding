@@ -4,7 +4,8 @@
 from .io import read_data
 from .string import pad, add_suffix_to_path
 from .cross_validation import construct_data_sets
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, f1_score, make_scorer
+from sklearn.model_selection._search import RandomizedSearchCV
 
 
 class Result(object):
@@ -118,10 +119,6 @@ class Result(object):
         return self.confusion_matrix_output() + '\n' + \
                self.scores_per_class_output() + '\n' + \
                self.average_scores_output()
-
-from sklearn.metrics import f1_score
-from sklearn.metrics import make_scorer
-from sklearn.model_selection._search import RandomizedSearchCV
 
 
 def classify(data_path, partitions, iterations, model, search_params, search_iterations):
