@@ -20,7 +20,7 @@ class ContinuousParameter(object):
         self.high = high
 
     def generate(self):
-        return uniform(self.low, self.high)
+        return sampler(self.low, self.high)
 
 
 class IntParameter(ContinuousParameter):
