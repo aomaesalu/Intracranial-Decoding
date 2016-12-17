@@ -120,41 +120,47 @@ class Result(object):
                self.average_scores_output()
 
 
-def classify(data_path, partitions, iterations, model):
+def create_classification_function(data_path, partitions, iterations):
 
-    # Initialise the result of the classification
-    result = Result()
+    def classify(classifier):
 
-    # Repeat cross-validation a set amount of times
-    for iteration in range(iterations):
+        # Initialise the result of the classification
+        result = Result()
 
-        # Read input data
-        data = []
-        for partition in range(partitions):
-            file_path = add_suffix_to_path(data_path, '-', iteration + 1,
-                                           partition + 1)
-            data.append(read_data(file_path))
+        # Repeat cross-validation a set amount of times
+        for iteration in range(iterations):
 
-        # Iterate through all of the data sets, using each of them for test data
-        # exactly once, and using all others as training data sets at the same
-        for test_index in range(partitions):
+            # Read input data # TODO: Move out of the loop
+            data = []
+            for partition in range(partitions):
+                file_path = add_suffix_to_path(data_path, '-', iteration + 1,
+                                               partition + 1)
+                data.append(read_data(file_path))
 
-            # Construct training and test data sets
-            train_data, test_data = construct_data_sets(data, partitions,
-                                                        test_index)
+            # Iterate through all of the data sets, using each of them for test
+            # data exactly once, and using all others as training data sets at
+            # the same
+            for test_index in range(partitions):
 
-            # Classification
-            model.fit(train_data['neural_responses'],
-                      train_data['image_category'])
+                # Construct training and test data sets
+                train_data, test_data = construct_data_sets(data, partitions,
+                                                            test_index)
 
-            # Prediction
-            predicted_values = model.predict(test_data['neural_responses'])
+                # Classification
+                classifier.fit(train_data['neural_responses'],
+                               train_data['image_category'])
 
-            # Add the true and predicted values to the result
-            result.add_values(test_data['image_category'], predicted_values)
+                # Prediction
+                predicted_values = classifier.predict(test_data['neural_responses'])
 
-    # Calculate the confusion matrix and the scores for each class
-    result.calculate()
+                # Add the true and predicted values to the result
+                result.add_values(test_data['image_category'], predicted_values)
 
-    # Return results
-    return result
+        # Calculate the confusion matrix and the scores for each class
+        result.calculate()
+
+        # Return results
+        return result
+
+    # Return the classification function
+    return classify

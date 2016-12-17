@@ -33,3 +33,7 @@ class FloatParameter(ContinuousParameter):
 
     def __init__(self, low, high):
         super(FloatParameter, self).__init__(low, high, uniform)
+
+
+def grid_search(classify, model, iterations):
+    pass # TODO

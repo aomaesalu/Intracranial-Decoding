@@ -2,63 +2,67 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
-from lib.classification import classify
+from lib.classification import create_classification_function
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
-from scipy.stats import randint as sp_randint
+from lib.grid_search import DistinctParameter, IntParameter, FloatParameter, grid_search
+from lib.io import write_data
 
 
-# TODO: Tune model
+def run(data_path, output_path, partitions, iterations, trials):
 
-def run(method, data_path, partitions, iterations):
+    # Create the classification function for classifying, predicting and scoring
+    # different classifiers over the data set provided, using stratified k-fold
+    # cross-validation repeated N times.
+    classify = create_classification_function(data_path, partitions, iterations)
 
-    # Define classification model based on the method passed to the algorithm
-    model = None
-    if method == 'svm':
-
-        # Define model
-        model = svm.SVC()
-
-        # Define model parameters with their specified ranges
-        search_params = {
-            "C": sp_randint(5, 15),
-            "decision_function_shape": ['ovo', 'ovr', None]
+    # Define classification models and their corresponding parameters
+    models = {
+        'svm': {
+            'classifier': svm.SVC(),
+            'parameters': {
+                'C': IntParameter(5, 15),
+                'decision_function_shape': DistinctParameter(['ovo', 'ovr',
+                                                              None])
+            }
+        },
+        'random_forest': {
+            'classifier': RandomForestClassifier(n_estimators=500),
+            'parameters': {
+                'max_features': IntParameter(5, 15),
+                'class_weight': DistinctParameter(['balanced',
+                                                   'balanced_subsample'])
+            }
         }
+    }
 
-    elif method == 'random_forest':
+    # Initialise the grid search result list
+    results = []
 
-        # Define model
-        model = RandomForestClassifier(n_estimators=200)
+    # Iterate trough each classification model defined
+    for name, model in models:
 
-        # Define model parameters with their specified ranges
-        search_params = {
-            "max_features": sp_randint(5, 15),
-            "class_weight": ["balanced", "balanced_subsample"]
-        }
+        # Perform grid search and append the results to the complete result list
+        results += grid_search(classify, model, trials)
 
-    # Iterations for randomizing
-    search_iterations = 1
+    # Output the grid search results into the specified file
+    write_data(output_path, results)
 
-    # Classify, predict and calculate the confusion matrix and scores
-    result = classify(data_path, partitions, iterations, model, search_params,
-                      search_iterations)
-
-    # Output model results
-    print(result)
 
 if __name__ == '__main__':
     # Parse command line arguments
     PARSER = ArgumentParser()
-    PARSER.add_argument('method', help='the classification method')
-    PARSER.add_argument('data_path', help='the pickled data file path')
+    PARSER.add_argument('data_path', help='the pickled input data file path')
+    PARSER.add_argument('output_path', help='the pickled results data output ' +
+                        'data file path')
     PARSER.add_argument('partitions', help='the amount of equal sized data ' +
-                                           'sets created upon partitioning the data', type=int)
+                        'sets created upon partitioning the data', type=int)
     PARSER.add_argument('iterations', help='the amount of times to perform ' +
-                                            'k-fold cross-validation', type = int)
-    # PARSER.add_argument('trials', help='the amount of trials with different ' +
-    #                     'randomly generated parameters')
+                        'k-fold cross-validation', type = int)
+    PARSER.add_argument('trials', help='the amount of trials with different ' +
+                        'randomly generated parameters')
 
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
-    run(ARGUMENTS.method, ARGUMENTS.data_path, ARGUMENTS.partitions, ARGUMENTS.iterations)
+    run(ARGUMENTS.data_path, ARGUMENTS.partitions, ARGUMENTS.iterations)
