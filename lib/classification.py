@@ -4,8 +4,7 @@
 from .io import read_data
 from .string import pad, add_suffix_to_path
 from .cross_validation import construct_data_sets
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, f1_score, make_scorer
-from sklearn.model_selection._search import RandomizedSearchCV
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 
 class Result(object):
@@ -121,12 +120,7 @@ class Result(object):
                self.average_scores_output()
 
 
-def classify(data_path, partitions, iterations, model, search_params, search_iterations):
-
-    # Randomized parameter search
-    f1_scorer = make_scorer(f1_score, average='macro')
-    search = RandomizedSearchCV(estimator=model, param_distributions=search_params,
-                                n_iter=search_iterations, scoring=f1_scorer, refit=True)
+def classify(data_path, partitions, iterations, model):
 
     # Initialise the result of the classification
     result = Result()
@@ -150,11 +144,11 @@ def classify(data_path, partitions, iterations, model, search_params, search_ite
                                                         test_index)
 
             # Classification
-            search.fit(train_data['neural_responses'],
+            model.fit(train_data['neural_responses'],
                       train_data['image_category'])
 
             # Prediction
-            predicted_values = search.predict(test_data['neural_responses'])
+            predicted_values = model.predict(test_data['neural_responses'])
 
             # Add the true and predicted values to the result
             result.add_values(test_data['image_category'], predicted_values)
