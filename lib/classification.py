@@ -1,8 +1,7 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf8 -*-i
 
-from .io import read_data
-from .string import pad, add_suffix_to_path
+from .string import pad
 from .cross_validation import construct_data_sets
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
@@ -120,7 +119,7 @@ class Result(object):
                self.average_scores_output()
 
 
-def create_classification_function(data_path, partitions, iterations):
+def create_classification_function(data, partitions, iterations):
 
     def classify(classifier):
 
@@ -130,20 +129,14 @@ def create_classification_function(data_path, partitions, iterations):
         # Repeat cross-validation a set amount of times
         for iteration in range(iterations):
 
-            # Read input data # TODO: Move out of the loop
-            data = []
-            for partition in range(partitions):
-                file_path = add_suffix_to_path(data_path, '-', iteration + 1,
-                                               partition + 1)
-                data.append(read_data(file_path))
-
             # Iterate through all of the data sets, using each of them for test
             # data exactly once, and using all others as training data sets at
             # the same
             for test_index in range(partitions):
 
                 # Construct training and test data sets
-                train_data, test_data = construct_data_sets(data, partitions,
+                train_data, test_data = construct_data_sets(data[iteration],
+                                                            partitions,
                                                             test_index)
 
                 # Classification

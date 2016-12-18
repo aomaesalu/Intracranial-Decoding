@@ -6,15 +6,18 @@ from lib.classification import create_classification_function
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from lib.grid_search import DistinctParameter, IntParameter, FloatParameter, grid_search
-from lib.io import write_data
+from lib.io import read_partitioned_data, write_data
 
 
-def run(data_path, output_path, partitions, iterations, trials):
+def run(input_path, output_path, partitions, iterations, trials):
+
+    # Read input data
+    data = read_partitioned_data(input_path, iterations, partitions)
 
     # Create the classification function for classifying, predicting and scoring
     # different classifiers over the data set provided, using stratified k-fold
     # cross-validation repeated N times.
-    classify = create_classification_function(data_path, partitions, iterations)
+    classify = create_classification_function(data, partitions, iterations)
 
     # Define classification models and their corresponding parameters
     models = {
@@ -52,7 +55,7 @@ def run(data_path, output_path, partitions, iterations, trials):
 if __name__ == '__main__':
     # Parse command line arguments
     PARSER = ArgumentParser()
-    PARSER.add_argument('data_path', help='the pickled input data file path')
+    PARSER.add_argument('input_path', help='the pickled input data file path')
     PARSER.add_argument('output_path', help='the pickled results data output ' +
                         'data file path')
     PARSER.add_argument('partitions', help='the amount of equal sized data ' +
@@ -65,4 +68,5 @@ if __name__ == '__main__':
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
-    run(ARGUMENTS.data_path, ARGUMENTS.partitions, ARGUMENTS.iterations)
+    run(ARGUMENTS.input_path, ARGUMENTS.output_path, ARGUMENTS.partitions,
+        ARGUMENTS.iterations, ARGUMENTS.trials)
