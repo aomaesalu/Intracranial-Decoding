@@ -49,6 +49,38 @@ class Result(object):
         self.average_scores = precision_recall_fscore_support(self.true_values, self.predicted_values, labels=self.classes, average='macro')
 
 
+    def class_precision(self, class_name):
+        return self.scores_per_class[0][self.classes.index(class_name)]
+
+
+    def class_recall(self, class_name):
+        return self.scores_per_class[1][self.classes.index(class_name)]
+
+
+    def class_f1(self, class_name):
+        return self.scores_per_class[2][self.classes.index(class_name)]
+
+
+    def class_support(self, class_name):
+        return self.scores_per_class[3][self.classes.index(class_name)]
+
+
+    def average_precision(self):
+        return self.average_scores[0]
+
+
+    def average_recall(self):
+        return self.average_scores[1]
+
+
+    def average_f1(self):
+        return self.average_scores[2]
+
+
+    def average_support(self):
+        return self.average_scores[3]
+
+
     def confusion_matrix_output(self):
 
         # Add the the title of the output
