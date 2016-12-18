@@ -25,7 +25,7 @@ class ContinuousParameter(object):
 
 class IntParameter(ContinuousParameter):
 
-    def __init(self, low, high):
+    def __init__(self, low, high):
         super(IntParameter, self).__init__(low, high, randint)
 
 
@@ -36,4 +36,9 @@ class FloatParameter(ContinuousParameter):
 
 
 def grid_search(classify, model, iterations):
+
+    results = []
+
     pass # TODO
+
+    return results

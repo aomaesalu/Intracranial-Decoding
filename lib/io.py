@@ -56,15 +56,17 @@ def write_data(path, data):
         dump(data, output_file)
 
 
-def read_partitioned_data(path, iterations, partitions):
+def read_partitioned_data(raw_path, iterations, partitions):
 
+    # Initialise the partitioned data set list
     data = []
 
     for iteration in range(1, iterations + 1):
         iteration_data = []
-        for paritition in range(1, partitions + 1):
-            file_path = add_suffix_to_path(data_path, '-', iteration, partition)
+        for partition in range(1, partitions + 1):
+            file_path = add_suffix_to_path(raw_path, '-', iteration, partition)
             iteration_data.append(read_data(file_path))
         data.append(iteration_data)
 
+    # Return partitioned data
     return data

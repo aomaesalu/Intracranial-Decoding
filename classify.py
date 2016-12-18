@@ -45,7 +45,7 @@ def run(input_path, output_path, number_of_partitions, number_of_iterations,
     results = []
 
     # Iterate trough each classification model defined
-    for name, model in models:
+    for name, model in models.items():
 
         # Perform grid search and append the results to the complete result list
         results += grid_search(classify, model, number_of_trials)
