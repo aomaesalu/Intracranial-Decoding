@@ -49,7 +49,19 @@ def grid_search(classify, algorithm, model, number_of_iterations):
         for name, parameter in model['parameters'].items():
             parameters[name] = parameter.generate()
 
-        pass # TODO
+        # Set the generated parameters to the classifier
+        model['classifier'].set_params(**parameters)
+
+        # Classify, predict and score the classifier
+        classification_results = classify(model['classifier'])
+
+        # Add the classification results for the algorithm to the grid search
+        # result list
+        results.append({
+            'algorithm': algorithm,
+            'f1': classification_results.average_f1(),
+            'predicted_values': classification_results.predicted_values
+        })
 
     # Return grid search results
     return results
