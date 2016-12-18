@@ -119,7 +119,7 @@ class Result(object):
                self.average_scores_output()
 
 
-def create_classification_function(data, partitions, iterations):
+def create_classification_function(data):
 
     def classify(classifier):
 
@@ -127,16 +127,15 @@ def create_classification_function(data, partitions, iterations):
         result = Result()
 
         # Repeat cross-validation a set amount of times
-        for iteration in range(iterations):
+        for iteration_data in data:
 
             # Iterate through all of the data sets, using each of them for test
             # data exactly once, and using all others as training data sets at
             # the same
-            for test_index in range(partitions):
+            for test_index in range(len(iteration_data)):
 
                 # Construct training and test data sets
-                train_data, test_data = construct_data_sets(data[iteration],
-                                                            partitions,
+                train_data, test_data = construct_data_sets(iteration_data,
                                                             test_index)
 
                 # Classification

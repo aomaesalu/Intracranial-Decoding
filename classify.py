@@ -17,7 +17,7 @@ def run(input_path, output_path, partitions, iterations, trials):
     # Create the classification function for classifying, predicting and scoring
     # different classifiers over the data set provided, using stratified k-fold
     # cross-validation repeated N times.
-    classify = create_classification_function(data, partitions, iterations)
+    classify = create_classification_function(data)
 
     # Define classification models and their corresponding parameters
     models = {
