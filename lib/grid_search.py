@@ -18,9 +18,10 @@ class ContinuousParameter(object):
     def __init__(self, low, high, sampler):
         self.low = low
         self.high = high
+        self.sampler = sampler
 
     def generate(self):
-        return sampler(self.low, self.high)
+        return self.sampler(self.low, self.high)
 
 
 class IntParameter(ContinuousParameter):
@@ -35,10 +36,20 @@ class FloatParameter(ContinuousParameter):
         super(FloatParameter, self).__init__(low, high, uniform)
 
 
-def grid_search(classify, model, iterations):
+def grid_search(classify, algorithm, model, number_of_iterations):
 
+    # Initialise the grid search results list
     results = []
 
-    pass # TODO
+    # Repeat grid search a set amount of times
+    for iteration in range(number_of_iterations):
 
+        # Generate model parameters
+        parameters = {}
+        for name, parameter in model['parameters'].items():
+            parameters[name] = parameter.generate()
+
+        pass # TODO
+
+    # Return grid search results
     return results

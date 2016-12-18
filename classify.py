@@ -45,10 +45,10 @@ def run(input_path, output_path, number_of_partitions, number_of_iterations,
     results = []
 
     # Iterate trough each classification model defined
-    for name, model in models.items():
+    for algorithm, model in models.items():
 
         # Perform grid search and append the results to the complete result list
-        results += grid_search(classify, model, number_of_trials)
+        results += grid_search(classify, algorithm, model, number_of_trials)
 
     # Output the grid search results into the specified file
     write_data(output_path, results)
@@ -65,7 +65,8 @@ if __name__ == '__main__':
     PARSER.add_argument('iterations', help='the amount of times to perform ' +
                         'k-fold cross-validation', type = int)
     PARSER.add_argument('trials', help='the amount of trials with different ' +
-                        'randomly generated parameters')
+                        'randomly generated parameters for each model',
+                        type=int)
 
     ARGUMENTS = PARSER.parse_args()
 
