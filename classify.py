@@ -9,10 +9,12 @@ from lib.grid_search import DistinctParameter, IntParameter, FloatParameter, gri
 from lib.io import read_partitioned_data, write_data
 
 
-def run(input_path, output_path, partitions, iterations, trials):
+def run(input_path, output_path, number_of_partitions, number_of_iterations,
+        number_of_trials):
 
-    # Read input data
-    data = read_partitioned_data(input_path, iterations, partitions)
+    # Read partitioned input data
+    data = read_partitioned_data(input_path, number_of_iterations,
+                                 number_of_partitions)
 
     # Create the classification function for classifying, predicting and scoring
     # different classifiers over the data set provided, using stratified k-fold
@@ -46,7 +48,7 @@ def run(input_path, output_path, partitions, iterations, trials):
     for name, model in models:
 
         # Perform grid search and append the results to the complete result list
-        results += grid_search(classify, model, trials)
+        results += grid_search(classify, model, number_of_trials)
 
     # Output the grid search results into the specified file
     write_data(output_path, results)
