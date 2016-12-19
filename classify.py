@@ -2,10 +2,7 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
-from lib.classification import create_classification_function
-from sklearn import svm
-from sklearn.ensemble import RandomForestClassifier
-from lib.grid_search import DistinctParameter, IntParameter, FloatParameter, grid_search
+from lib.grid_search import grid_search
 from lib.io import read_partitioned_data, write_data
 
 
@@ -16,28 +13,15 @@ def run(input_path, output_path, number_of_partitions, number_of_iterations,
     data = read_partitioned_data(input_path, number_of_iterations,
                                  number_of_partitions)
 
-    # Create the classification function for classifying, predicting and scoring
-    # different classifiers over the data set provided, using stratified k-fold
-    # cross-validation repeated N times.
-    classify = create_classification_function(data)
-
     # Define classification models and their corresponding parameters
     models = {
         'svm': {
-            'classifier': svm.SVC(),
-            'parameters': {
-                'C': IntParameter(5, 15),
-                'decision_function_shape': DistinctParameter(['ovo', 'ovr',
-                                                              None])
-            }
+            'C': (int, (5, 15)),
+            'decision_function_shape': (tuple, ('ovo', 'ovr', None))
         },
         'random_forest': {
-            'classifier': RandomForestClassifier(n_estimators=500),
-            'parameters': {
-                'max_features': IntParameter(5, 15),
-                'class_weight': DistinctParameter(['balanced',
-                                                   'balanced_subsample'])
-            }
+            'max_features': (int, (5, 15)),
+            'class_weight': (tuple, ('balanced', 'balanced_subsample'))
         }
     }
 
@@ -45,10 +29,11 @@ def run(input_path, output_path, number_of_partitions, number_of_iterations,
     results = []
 
     # Iterate trough each classification model defined
-    for algorithm, model in models.items():
+    for algorithm, parameter_model in models.items():
 
         # Perform grid search and append the results to the complete result list
-        results += grid_search(classify, algorithm, model, number_of_trials)
+        results += grid_search(data, algorithm, parameter_model,
+                               number_of_trials)
 
     # Output the grid search results into the specified file
     write_data(output_path, results)

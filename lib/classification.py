@@ -4,6 +4,8 @@
 from .string import pad
 from .cross_validation import construct_data_sets
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
 
 
 class Result(object):
@@ -151,40 +153,41 @@ class Result(object):
                self.average_scores_output()
 
 
-def create_classification_function(data):
+def classify(data, classifier):
 
-    def classify(classifier):
+    # Initialise the result of the classification
+    result = Result()
 
-        # Initialise the result of the classification
-        result = Result()
+    # Repeat cross-validation a set amount of times
+    for iteration_data in data:
 
-        # Repeat cross-validation a set amount of times
-        for iteration_data in data:
+        # Iterate through all of the data sets, using each of them for test
+        # data exactly once, and using all others as training data sets at
+        # the same
+        for test_index in range(len(iteration_data)):
 
-            # Iterate through all of the data sets, using each of them for test
-            # data exactly once, and using all others as training data sets at
-            # the same
-            for test_index in range(len(iteration_data)):
+            # Construct training and test data sets
+            train_data, test_data = construct_data_sets(iteration_data,
+                                                        test_index)
 
-                # Construct training and test data sets
-                train_data, test_data = construct_data_sets(iteration_data,
-                                                            test_index)
+            # Classification
+            classifier.fit(train_data['neural_responses'],
+                           train_data['image_category'])
 
-                # Classification
-                classifier.fit(train_data['neural_responses'],
-                               train_data['image_category'])
+            # Prediction
+            predicted_values = classifier.predict(test_data['neural_responses'])
 
-                # Prediction
-                predicted_values = classifier.predict(test_data['neural_responses'])
+            # Add the true and predicted values to the result
+            result.add_values(test_data['image_category'], predicted_values)
 
-                # Add the true and predicted values to the result
-                result.add_values(test_data['image_category'], predicted_values)
+    # Calculate the confusion matrix and the scores for each class
+    result.calculate()
 
-        # Calculate the confusion matrix and the scores for each class
-        result.calculate()
+    # Return results
+    return result
 
-        # Return results
-        return result
 
-    # Return the classification function
-    return classify
+classifierFromAlgorithm = {
+    'svm': svm.SVC(),
+    'random_forest': RandomForestClassifier(n_estimators=500)
+}
