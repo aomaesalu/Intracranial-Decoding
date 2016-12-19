@@ -6,38 +6,6 @@ from multiprocessing import Pool, cpu_count
 from .classification import classify, classifierFromAlgorithm
 
 
-class DistinctParameter(object):
-
-    def __init__(self, values):
-        self.values = values
-
-    def generate(self):
-        return choice(self.values)
-
-
-class ContinuousParameter(object):
-
-    def __init__(self, low, high, sampler):
-        self.low = low
-        self.high = high
-        self.sampler = sampler
-
-    def generate(self):
-        return self.sampler(self.low, self.high)
-
-
-class IntParameter(ContinuousParameter):
-
-    def __init__(self, low, high):
-        super(IntParameter, self).__init__(low, high, randint)
-
-
-class FloatParameter(ContinuousParameter):
-
-    def __init__(self, low, high):
-        super(FloatParameter, self).__init__(low, high, uniform)
-
-
 def generate_parameter(parameter):
     if parameter[0] == tuple:
         return samplerFromType[parameter[0]](parameter[1])
