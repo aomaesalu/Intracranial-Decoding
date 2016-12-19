@@ -6,6 +6,8 @@ This module contains all I/O functionality necessary to perform the analysis.
 All file I/O operations are carried out with pickled data.
 '''
 
+from .string import add_suffix_to_path
+
 try:
     from cPickle import load, dump
 except ImportError:
@@ -52,3 +54,19 @@ def write_data(path, data):
 
         # Dump data into the output data file
         dump(data, output_file)
+
+
+def read_partitioned_data(raw_path, iterations, partitions):
+
+    # Initialise the partitioned data set list
+    data = []
+
+    for iteration in range(1, iterations + 1):
+        iteration_data = []
+        for partition in range(1, partitions + 1):
+            file_path = add_suffix_to_path(raw_path, '-', iteration, partition)
+            iteration_data.append(read_data(file_path))
+        data.append(iteration_data)
+
+    # Return partitioned data
+    return data

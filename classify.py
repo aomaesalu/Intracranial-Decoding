@@ -2,63 +2,59 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
-from lib.classification import classify
-from sklearn import svm
-from sklearn.ensemble import RandomForestClassifier
-from scipy.stats import randint as sp_randint
+from lib.grid_search import grid_search
+from lib.io import read_partitioned_data, write_data
 
 
-# TODO: Tune model
+def run(input_path, output_path, number_of_partitions, number_of_iterations,
+        number_of_trials):
 
-def run(method, data_path, partitions, iterations):
+    # Read partitioned input data
+    data = read_partitioned_data(input_path, number_of_iterations,
+                                 number_of_partitions)
 
-    # Define classification model based on the method passed to the algorithm
-    model = None
-    if method == 'svm':
-
-        # Define model
-        model = svm.SVC()
-
-        # Define model parameters with their specified ranges
-        search_params = {
-            "C": sp_randint(5, 15),
-            "decision_function_shape": ['ovo', 'ovr', None]
+    # Define classification models and their corresponding parameters
+    models = {
+        'svm': {
+            'C': (int, (5, 15)),
+            'decision_function_shape': (tuple, ('ovo', 'ovr', None))
+        },
+        'random_forest': {
+            'max_features': (int, (5, 15)),
+            'class_weight': (tuple, ('balanced', 'balanced_subsample'))
         }
+    }
 
-    elif method == 'random_forest':
+    # Initialise the grid search result list
+    results = []
 
-        # Define model
-        model = RandomForestClassifier(n_estimators=200)
+    # Iterate trough each classification model defined
+    for algorithm, parameter_model in models.items():
 
-        # Define model parameters with their specified ranges
-        search_params = {
-            "max_features": sp_randint(5, 15),
-            "class_weight": ["balanced", "balanced_subsample"]
-        }
+        # Perform grid search and append the results to the complete result list
+        results += grid_search(data, algorithm, parameter_model,
+                               number_of_trials)
 
-    # Iterations for randomizing
-    search_iterations = 1
+    # Output the grid search results into the specified file
+    write_data(output_path, results)
 
-    # Classify, predict and calculate the confusion matrix and scores
-    result = classify(data_path, partitions, iterations, model, search_params,
-                      search_iterations)
-
-    # Output model results
-    print(result)
 
 if __name__ == '__main__':
     # Parse command line arguments
     PARSER = ArgumentParser()
-    PARSER.add_argument('method', help='the classification method')
-    PARSER.add_argument('data_path', help='the pickled data file path')
+    PARSER.add_argument('input_path', help='the pickled input data file path')
+    PARSER.add_argument('output_path', help='the pickled results data output ' +
+                        'data file path')
     PARSER.add_argument('partitions', help='the amount of equal sized data ' +
-                                           'sets created upon partitioning the data', type=int)
+                        'sets created upon partitioning the data', type=int)
     PARSER.add_argument('iterations', help='the amount of times to perform ' +
-                                            'k-fold cross-validation', type = int)
-    # PARSER.add_argument('trials', help='the amount of trials with different ' +
-    #                     'randomly generated parameters')
+                        'k-fold cross-validation', type = int)
+    PARSER.add_argument('trials', help='the amount of trials with different ' +
+                        'randomly generated parameters for each model',
+                        type=int)
 
     ARGUMENTS = PARSER.parse_args()
 
     # Run the data classification script
-    run(ARGUMENTS.method, ARGUMENTS.data_path, ARGUMENTS.partitions, ARGUMENTS.iterations)
+    run(ARGUMENTS.input_path, ARGUMENTS.output_path, ARGUMENTS.partitions,
+        ARGUMENTS.iterations, ARGUMENTS.trials)

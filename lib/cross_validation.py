@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-i
 
 
-def construct_data_sets(data, cv_amount, test_index):
+def construct_data_sets(data, test_index):
 
     # Initialise the training data
     train_data = {
@@ -14,7 +14,7 @@ def construct_data_sets(data, cv_amount, test_index):
 
     # Iterate through all of the partitioned data sets to construct the training
     # data set
-    for i in range(cv_amount):
+    for i in range(len(data)):
 
         # If the current data set corresponds to the test data set index set,
         # skip that data set

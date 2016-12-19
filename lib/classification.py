@@ -1,11 +1,11 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf8 -*-i
 
-from .io import read_data
-from .string import pad, add_suffix_to_path
+from .string import pad
 from .cross_validation import construct_data_sets
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, f1_score, make_scorer
-from sklearn.model_selection._search import RandomizedSearchCV
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
 
 
 class Result(object):
@@ -49,6 +49,38 @@ class Result(object):
         # distribution inbalance into account. Each class is as important as
         # another.
         self.average_scores = precision_recall_fscore_support(self.true_values, self.predicted_values, labels=self.classes, average='macro')
+
+
+    def class_precision(self, class_name):
+        return self.scores_per_class[0][self.classes.index(class_name)]
+
+
+    def class_recall(self, class_name):
+        return self.scores_per_class[1][self.classes.index(class_name)]
+
+
+    def class_f1(self, class_name):
+        return self.scores_per_class[2][self.classes.index(class_name)]
+
+
+    def class_support(self, class_name):
+        return self.scores_per_class[3][self.classes.index(class_name)]
+
+
+    def average_precision(self):
+        return self.average_scores[0]
+
+
+    def average_recall(self):
+        return self.average_scores[1]
+
+
+    def average_f1(self):
+        return self.average_scores[2]
+
+
+    def average_support(self):
+        return self.average_scores[3]
 
 
     def confusion_matrix_output(self):
@@ -121,40 +153,29 @@ class Result(object):
                self.average_scores_output()
 
 
-def classify(data_path, partitions, iterations, model, search_params, search_iterations):
-
-    # Randomized parameter search
-    f1_scorer = make_scorer(f1_score, average='macro')
-    search = RandomizedSearchCV(estimator=model, param_distributions=search_params,
-                                n_iter=search_iterations, scoring=f1_scorer, refit=True)
+def classify(data, classifier):
 
     # Initialise the result of the classification
     result = Result()
 
     # Repeat cross-validation a set amount of times
-    for iteration in range(iterations):
+    for iteration_data in data:
 
-        # Read input data
-        data = []
-        for partition in range(partitions):
-            file_path = add_suffix_to_path(data_path, '-', iteration + 1,
-                                           partition + 1)
-            data.append(read_data(file_path))
-
-        # Iterate through all of the data sets, using each of them for test data
-        # exactly once, and using all others as training data sets at the same
-        for test_index in range(partitions):
+        # Iterate through all of the data sets, using each of them for test
+        # data exactly once, and using all others as training data sets at
+        # the same
+        for test_index in range(len(iteration_data)):
 
             # Construct training and test data sets
-            train_data, test_data = construct_data_sets(data, partitions,
+            train_data, test_data = construct_data_sets(iteration_data,
                                                         test_index)
 
             # Classification
-            search.fit(train_data['neural_responses'],
-                      train_data['image_category'])
+            classifier.fit(train_data['neural_responses'],
+                           train_data['image_category'])
 
             # Prediction
-            predicted_values = search.predict(test_data['neural_responses'])
+            predicted_values = classifier.predict(test_data['neural_responses'])
 
             # Add the true and predicted values to the result
             result.add_values(test_data['image_category'], predicted_values)
@@ -164,3 +185,9 @@ def classify(data_path, partitions, iterations, model, search_params, search_ite
 
     # Return results
     return result
+
+
+classifierFromAlgorithm = {
+    'svm': svm.SVC(),
+    'random_forest': RandomForestClassifier(n_estimators=500)
+}

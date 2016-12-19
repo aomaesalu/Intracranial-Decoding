@@ -4,6 +4,14 @@
 raw_data_file='data/stim_probe_category_ON_meangamma_bipolar_noscram_artif_brodmann_resppositive.pkl'
 filtered_data_file='data/filtered.pkl'
 partition_file='data/partition.pkl'
+results_file='data/results.pkl'
+
+# Set cross-validation parameters
+partitions=5
+iterations=10
+
+# Set grid search parameters
+trials=5
 
 # Split file name and extension
 partition_file_name=${partition_file%.*}
@@ -21,26 +29,15 @@ printf '# Pipeline: Descriptive analysis\n'
 python ./descriptive_analysis.py $filtered_data_file
 printf '\n'
 
-# Set how many equal parts to partition the data into.
-k=10
-
-# Set how many times to perform cross-validation.
-N=5
-
 # Data partitioning. We use stratified k-fold cross-validation N times.
-printf '# Pipeline: Partitioning data %d times into %d equal sets\n' $N $k
-for (( i=1; i<=N; i++ ))
+printf '# Pipeline: Partitioning data %d times into %d equal sets\n' $iterations $partitions
+for (( i=1; i<=iterations; i++ ))
 do
-    python ./partition_data.py $filtered_data_file $partition_file_name'-'$i'.'$partition_file_extension $k --even
+    python ./partition_data.py $filtered_data_file $partition_file_name'-'$i'.'$partition_file_extension $partitions --even
 done
 printf '\n'
 
 # Analysis: SVM
-printf '# Pipeline: SVM\n'
-python ./classify.py svm $partition_file $k $N
-printf '\n'
-
-# Analysis: SVM
-printf '# Pipeline: Random forests\n'
-python ./classify.py random_forest $partition_file $k $N
+printf '# Pipeline: Classification grid search\n'
+python ./classify.py $partition_file $results_file $partitions $iterations $trials
 printf '\n'
