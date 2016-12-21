@@ -36,6 +36,7 @@ def grid_search_iteration(data, algorithm, parameter_model):
         'parameters': parameters,
         'f1': results.average_f1(),
         'predicted_values': results.predicted_values
+        'true_values': results.true_values
     }
 
 
@@ -44,11 +45,15 @@ def grid_search(data, algorithm, parameter_model, number_of_iterations):
     # Initialise the grid search results list
     results = []
 
-    # Initialise the multiprocessing pool
+    # Initialise the multiprocessing pool.
+    # The number of processes is set to be the CPU count, as the classification
+    # is CPU-bound.
     pool = Pool(processes=cpu_count())
 
     # Run grid search and construct the results list
-    raw_results = [pool.apply_async(grid_search_iteration, (data, algorithm, parameter_model)) for i in range(number_of_iterations)]
+    raw_results = [pool.apply_async(grid_search_iteration, (data, algorithm,
+                                                            parameter_model)) \
+                   for i in range(number_of_iterations)]
     results = [result.get() for result in raw_results]
 
     # Prevent any more tasks to be submitted to the pool. Once all the tasks
