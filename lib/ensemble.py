@@ -13,15 +13,50 @@ def select_best_classifiers(results, proportion):
     return sorted(results, key=lambda k: k['f1'], reverse=True)[:amount]
 
 
+def calculate_disagreement(values_1, values_2):
+
+    # Initialise the disagreement metric
+    disagreement = 0
+
+    # Iterate through all values in both lists
+    for i in range(len(values_1)):
+
+        # If the values do not match, increment the disagreement metric by 1
+        if values_1[i] != values_2[i]:
+            disagreement += 1
+
+    # Return the disagreement metric
+    return disagreement
+
+
 def construct_disagreement_matrix(results):
 
-    pass # TODO
+    # Initialise the disagreement matrix
+    matrix = [[[]] * len(results)] * len(results)
+
+    # Iterate through all result pairs
+    for i in range(len(results)):
+        for j in range(i + 1, len(results)):
+
+            # Calculate the disagreement of these two results
+            values_1 = results[i]['predicted_values']
+            values_2 = results[j]['predicted_values']
+            disagreement = calculate_disagreement(values_1, values_2)
+
+            # Add the disagreement to the disagreement matrix
+            matrix[i][j] = disagreement
+            matrix[j][i] = disagreement
 
     # Return the disagreement matrix of the classification results list
-    return None # TODO
+    return disagreement
 
 
-def filter_most_disagreeing(results, disagreement):
+def filter_most_disagreeing(results, disagreement, proportion):
+
+    # Determine the amount of classifiers to be included in the ensemble
+    amount = int(round(len(results) * proportion))
+    if amount == 0:
+        amount = 1
 
     pass # TODO
 
@@ -38,7 +73,8 @@ def construct_ensemble(results, best_proportion, used_proportion):
     disagreement = construct_disagreement_matrix(best_results)
 
     # Filter results that disagree with each other the most
-    ensemble = filter_most_disagreeing(best_results, disagreement)
+    ensemble = filter_most_disagreeing(best_results, disagreement,
+                                       used_proportion)
 
     # Return the ensemble constructed in the process
     return ensemble
