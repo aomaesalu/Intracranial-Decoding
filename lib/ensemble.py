@@ -48,7 +48,7 @@ def construct_disagreement_matrix(results):
             matrix[j][i] = disagreement
 
     # Return the disagreement matrix of the classification results list
-    return disagreement
+    return matrix
 
 
 def calculate_sums(matrix):
@@ -73,7 +73,7 @@ def filter_most_disagreeing(results, proportion):
         amount = 1
 
     # Measure pairwise disagreement
-    disagreement = construct_disagreement_matrix(best_results)
+    disagreement = construct_disagreement_matrix(results)
 
     # Calculate the row and column sums of the disagreement matrix
     row_sums, column_sums = calculate_sums(disagreement)
@@ -121,7 +121,7 @@ def ensemble_vote(results):
     predicted_values = []
 
     # Iterate through each value to be predicted
-    for i in range(len(results[0])):
+    for i in range(len(results[0]['predicted_values'])):
 
         # Initialise the frequency dictionary
         frequency = {}

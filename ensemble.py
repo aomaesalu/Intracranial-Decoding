@@ -31,6 +31,7 @@ def run(data_path, number_of_partitions, number_of_iterations, results_path,
     # Score the classification results of the ensemble against the true values
     result = Result()
     result.add_values(true_values, predicted_values)
+    result.calculate()
 
     # Output the ensemble into the specified file
     write_data(output_path, ensemble)
