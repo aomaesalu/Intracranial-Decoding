@@ -79,23 +79,22 @@ def filter_most_disagreeing(results, proportion):
     row_sums, column_sums = calculate_sums(disagreement)
 
     # Iterate the removal of results until only the specified amount is left.
-    # Note that as the disagreement matrix is symmetric, we only use the row
+    # Note that as the disagreement matrix is symmetric, we only use the column
     # sums in the calculation.
     for i in range(len(results) - amount):
 
         # Find the index of the result that disagrees with others the least
-        index = row_sums.index(min(row_sums))
+        index = column_sums.index(min(column_sums))
 
-        # Remove that result's values from the row sums
-        for j in range(len(row_sums)):
-            row_sums[j] -= disagreement[j][index]
+        # Remove that result's values from the column sums
+        for j in range(len(column_sums)):
+            column_sums[j] -= disagreement[index][j]
 
-        # Remove that result's index from the row sums
-        del row_sums[index]
+        # Remove that result's index from the column sums
+        del column_sums[index]
 
-        # Remove that result's column from the disagreement matrix
-        for j in range(len(disagreement)):
-            del disagreement[j][index]
+        # Remove that result's row from the disagreement matrix
+        del disagreement[index]
 
         # Remove that result's index from the results list
         del results[index]
