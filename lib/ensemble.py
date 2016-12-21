@@ -93,8 +93,7 @@ def filter_most_disagreeing(results, proportion):
         # Remove that result's index from the row sums
         del row_sums[index]
 
-        # Remove that result's row and column from the disagreement matrix
-        del disagreement[index]
+        # Remove that result's column from the disagreement matrix
         for j in range(len(disagreement)):
             del disagreement[j][index]
 
