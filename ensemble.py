@@ -2,13 +2,13 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
-from lib.io import read_data, read_partitioned_data
+from lib.io import read_data, read_partitioned_data, write_data
 from lib.classification import get_true_values, Result
 from lib.ensemble import construct_ensemble, ensemble_vote
 
 
 def run(data_path, number_of_partitions, number_of_iterations, results_path,
-        best_proportion, used_proportion):
+        best_proportion, used_proportion, output_path):
 
     # Read partitioned input data
     data = read_partitioned_data(data_path, number_of_iterations,
@@ -32,7 +32,10 @@ def run(data_path, number_of_partitions, number_of_iterations, results_path,
     result = Result()
     result.add_values(true_values, predicted_values)
 
-    # Output the results
+    # Output the ensemble into the specified file
+    write_data(output_path, ensemble)
+
+    # Output the results of the ensemble on the screen
     print(result)
 
 
@@ -53,9 +56,11 @@ if __name__ == '__main__':
     PARSER.add_argument('used_proportion', help='the proportion of results ' \
                         'most disagreeing with each other to be kept in the ' \
                         'ensemble')
+    PARSER.add_argument('output_path', help='the pickled ensemble results ' \
+                        'data output data file path')
     ARGUMENTS = PARSER.parse_args()
 
     # Run the ensemble construction and scoring script
     run(ARGUMENTS.data_path, ARGUMENTS.partitions, ARGUMENTS.iterations,
         ARGUMENTS.results_path, ARGUMENTS.best_proportion,
-        ARGUMENTS.used_proportion)
+        ARGUMENTS.used_proportion, ARGUMENTS.output_path)

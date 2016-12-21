@@ -4,7 +4,8 @@
 raw_data_file='data/stim_probe_category_ON_meangamma_bipolar_noscram_artif_brodmann_resppositive.pkl'
 filtered_data_file='data/filtered.pkl'
 partition_file='data/partition.pkl'
-results_file='data/results.pkl'
+grid_search_file='data/results.pkl'
+ensemble_file='data/ensemble.pkl'
 
 # Set cross-validation parameters
 partitions=10
@@ -39,10 +40,10 @@ printf '\n'
 
 # Classification and grid search
 printf '# Pipeline: Classification and grid search\n'
-python ./classify.py $partition_file $results_file $partitions $iterations $trials
+python ./classify.py $partition_file $grid_search_file $partitions $iterations $trials
 printf '\n'
 
 # Ensemble construction, classification and scoring
 printf '# Pipeline: Ensemble construction, classification and scoring\n'
-python ./ensemble.py $partition_file $partitions $iterations $results_file 0.1 0.1
+python ./ensemble.py $partition_file $partitions $iterations $grid_search_file 0.1 0.1 $ensemble_file
 printf '\n'
