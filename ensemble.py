@@ -47,7 +47,7 @@ if __name__ == '__main__':
     PARSER.add_argument('partitions', help='the amount of equal sized data ' +
                         'sets created upon partitioning the data', type=int)
     PARSER.add_argument('iterations', help='the amount of times to perform ' +
-                        'k-fold cross-validation', type = int)
+                        'k-fold cross-validation', type=int)
     PARSER.add_argument('results_path', help='the pickled data input file ' \
                         'containing all of the results of the grid search')
     PARSER.add_argument('best_proportion', help='the proportion of best ' \
@@ -55,7 +55,7 @@ if __name__ == '__main__':
                         'the ensemble', type=float)
     PARSER.add_argument('used_proportion', help='the proportion of results ' \
                         'most disagreeing with each other to be kept in the ' \
-                        'ensemble')
+                        'ensemble', type=float)
     PARSER.add_argument('output_path', help='the pickled ensemble results ' \
                         'data output data file path')
     ARGUMENTS = PARSER.parse_args()

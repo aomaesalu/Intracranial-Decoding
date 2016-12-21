@@ -48,7 +48,7 @@ if __name__ == '__main__':
     PARSER.add_argument('partitions', help='the amount of equal sized data ' +
                         'sets created upon partitioning the data', type=int)
     PARSER.add_argument('iterations', help='the amount of times to perform ' +
-                        'k-fold cross-validation', type = int)
+                        'k-fold cross-validation', type=int)
     PARSER.add_argument('trials', help='the amount of trials with different ' +
                         'randomly generated parameters for each model',
                         type=int)
