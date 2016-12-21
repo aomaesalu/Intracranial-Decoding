@@ -3,12 +3,19 @@
 
 from argparse import ArgumentParser
 from lib.io import read_data, read_partitioned_data
-from lib.classification import get_true_values
+from lib.classification import get_true_values, Result
 from lib.ensemble import construct_ensemble, ensemble_vote
 
 
 def run(data_path, number_of_partitions, number_of_iterations, results_path,
         best_proportion, used_proportion):
+
+    # Read partitioned input data
+    data = read_partitioned_data(data_path, number_of_iterations,
+                                 number_of_partitions)
+
+    # Read true values from the partitioned data set
+    true_values = get_true_values(data)
 
     # Read the grid search results as input data
     results = read_data(results_path)
@@ -21,18 +28,12 @@ def run(data_path, number_of_partitions, number_of_iterations, results_path,
     # popularity vote
     predicted_values = ensemble_vote(ensemble)
 
-    # Read partitioned input data
-    data = read_partitioned_data(data_path, number_of_iterations,
-                                 number_of_partitions)
-
-    # Read true values from the partitioned data set
-    true_values = get_true_values(data)
-
     # Score the classification results of the ensemble against the true values
-    pass # TODO
+    result = Result()
+    result.add_values(true_values, predicted_values)
 
     # Output the results
-    pass # TODO
+    print(result)
 
 
 if __name__ == '__main__':
