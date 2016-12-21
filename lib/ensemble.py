@@ -78,10 +78,31 @@ def filter_most_disagreeing(results, proportion):
     # Calculate the row and column sums of the disagreement matrix
     row_sums, column_sums = calculate_sums(disagreement)
 
-    pass # TODO
+    # Iterate the removal of results until only the specified amount is left.
+    # Note that as the disagreement matrix is symmetric, we only use the row
+    # sums in the calculation.
+    for i in range(len(results) - amount):
+
+        # Find the index of the result that disagrees with others the least
+        index = row_sums.index(min(row_sums))
+
+        # Remove that result's values from the row sums
+        for j in range(len(row_sums)):
+            row_sums[j] -= disagreement[j][index]
+
+        # Remove that result's index from the row sums
+        del row_sums[index]
+
+        # Remove that result's row and column from the disagreement matrix
+        del disagreement[index]
+        for j in range(len(disagreement)):
+            del disagreement[j][index]
+
+        # Remove that result's index from the results list
+        del results[index]
 
     # Return the most disagreeing classifiers in the classification results list
-    return None # TODO
+    return results
 
 
 def construct_ensemble(results, best_proportion, used_proportion):
