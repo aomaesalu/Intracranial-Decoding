@@ -51,12 +51,32 @@ def construct_disagreement_matrix(results):
     return disagreement
 
 
-def filter_most_disagreeing(results, disagreement, proportion):
+def calculate_sums(matrix):
+
+    # Calculate the row and column sums
+    row_sums = [[0]] * len(matrix)
+    column_sums = [[0]] * len(matrix[0])
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            row_sums[i] += matrix[i][j]
+            column_sums[j] += matrix[i][j]
+
+    # Return the row and column sums in the matrix
+    return row_sums, column_sums
+
+
+def filter_most_disagreeing(results, proportion):
 
     # Determine the amount of classifiers to be included in the ensemble
     amount = int(round(len(results) * proportion))
     if amount == 0:
         amount = 1
+
+    # Measure pairwise disagreement
+    disagreement = construct_disagreement_matrix(best_results)
+
+    # Calculate the row and column sums of the disagreement matrix
+    row_sums, column_sums = calculate_sums(disagreement)
 
     pass # TODO
 
@@ -69,12 +89,8 @@ def construct_ensemble(results, best_proportion, used_proportion):
     # Select best classifiers
     best_results = select_best_classifiers(results, best_proportion)
 
-    # Measure pairwise disagreement
-    disagreement = construct_disagreement_matrix(best_results)
-
     # Filter results that disagree with each other the most
-    ensemble = filter_most_disagreeing(best_results, disagreement,
-                                       used_proportion)
+    ensemble = filter_most_disagreeing(best_results, used_proportion)
 
     # Return the ensemble constructed in the process
     return ensemble
