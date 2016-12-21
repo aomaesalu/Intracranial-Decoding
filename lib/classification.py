@@ -162,8 +162,7 @@ def classify(data, classifier):
     for iteration_data in data:
 
         # Iterate through all of the data sets, using each of them for test
-        # data exactly once, and using all others as training data sets at
-        # the same
+        # data exactly once, and using all others as training data sets
         for test_index in range(len(iteration_data)):
 
             # Construct training and test data sets
@@ -185,6 +184,29 @@ def classify(data, classifier):
 
     # Return results
     return result
+
+
+def get_true_values(data):
+
+    # Initialise the true values list
+    true_values = []
+
+    # Repeat cross-validation a set amount of times
+    for iteration_data in data:
+
+        # Iterate through all of the data sets, using each of them for test data
+        # exactly once, and using all others as training data sets
+        for test_index in range(len(iteration_data)):
+
+            # Construct training and test data sets
+            train_data, test_data = construct_data_sets(iteration_data,
+                                                        test_index)
+
+            # Add the true values to the result list
+            true_values += test_data['image_category']
+
+    # Return the list of true values in the data set
+    return true_values
 
 
 classifierFromAlgorithm = {

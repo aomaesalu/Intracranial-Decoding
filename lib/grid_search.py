@@ -36,7 +36,6 @@ def grid_search_iteration(data, algorithm, parameter_model):
         'parameters': parameters,
         'f1': results.average_f1(),
         'predicted_values': results.predicted_values
-        'true_values': results.true_values
     }
 
 

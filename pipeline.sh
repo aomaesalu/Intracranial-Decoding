@@ -44,5 +44,5 @@ printf '\n'
 
 # Ensemble construction, classification and scoring
 printf '# Pipeline: Ensemble construction, classification and scoring\n'
-python ./ensemble.py $results_file 0.1 0.1
+python ./ensemble.py $partition_file $partitions $iterations $results_file 0.1 0.1
 printf '\n'
