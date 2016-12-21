@@ -37,7 +37,12 @@ do
 done
 printf '\n'
 
-# Analysis: SVM
-printf '# Pipeline: Classification grid search\n'
+# Classification and grid search
+printf '# Pipeline: Classification and grid search\n'
 python ./classify.py $partition_file $results_file $partitions $iterations $trials
+printf '\n'
+
+# Ensemble construction, classification and scoring
+printf '# Pipeline: Ensemble construction, classification and scoring\n'
+python ./ensemble.py $results_file 0.1 0.1
 printf '\n'
