@@ -46,8 +46,32 @@ def construct_ensemble(results, best_proportion, used_proportion):
 
 def ensemble_vote(results):
 
-    pass # TODO
+    # Initialise the list of predicted values
+    predicted_values = []
 
-    # Return the classification results of the ensemble based on a popularity
-    # vote
-    return None
+    # Iterate through each value to be predicted
+    for i in range(len(results[0])):
+
+        # Initialise the frequency dictionary
+        frequency = {}
+
+        # Iterate through all results
+        for result in results:
+
+            # Retrieve the current predicted value of the current result
+            value = result['predicted_values'][i]
+
+            # If the value does not exist in the frequency dictionary, add it
+            # with an initial count of 1 (the current result value). If it does
+            # exist, increment the corresponding value by 1.
+            if value not in frequency:
+                frequency[value] = 1
+            else:
+                frequency[value] += 1
+
+        # Append the most popular value to the list of predicted values
+        predicted_values.append(max(frequency, key=frequency.get))
+
+    # Return the classified predicted values of the ensemble based on a
+    # popularity vote
+    return predicted_values
