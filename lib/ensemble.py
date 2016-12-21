@@ -4,10 +4,13 @@
 
 def select_best_classifiers(results, proportion):
 
-    pass # TODO
+    # Determine the amount of best classifiers to be returned
+    amount = int(round(len(results) * proportion))
+    if amount == 0:
+        amount = 1
 
     # Return the list of best classifiers in the classification results list
-    return None # TODO
+    return sorted(results, key=lambda k: k['f1'], reverse=True)[:amount]
 
 
 def construct_disagreement_matrix(results):
