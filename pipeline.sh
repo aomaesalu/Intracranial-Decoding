@@ -7,11 +7,11 @@ partition_file='data/partition.pkl'
 results_file='data/results.pkl'
 
 # Set cross-validation parameters
-partitions=5
+partitions=10
 iterations=10
 
 # Set grid search parameters
-trials=5
+trials=10000
 
 # Split file name and extension
 partition_file_name=${partition_file%.*}
