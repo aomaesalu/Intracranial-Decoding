@@ -31,13 +31,9 @@ def run(raw_input_path, output_path, time_windows, frequency_bands):
             # Read the input file
             input_data = read_data(input_path)
 
-            print(input_data)
-
             # Add the F1-score received from the data into the integrated data
             # dictionary
             integrated[time_window][frequency_band] = input_data.average_f1()
-
-    print(integrated)
 
     # Output the integrated scores into the specified file
     write_data(output_path, integrated)
