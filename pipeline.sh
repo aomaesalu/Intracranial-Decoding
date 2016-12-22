@@ -68,7 +68,7 @@ for time_window in 50 150 250; do
 
     # Ensemble construction, classification and scoring
     printf '# Pipeline: Ensemble construction, classification and scoring\n'
-    python ./ensemble.py $partitioned_data_file $partitions $iterations $grid_search_file 0.1 0.1 $ensemble_file
+    python ./ensemble.py $partitioned_data_file $partitions $iterations $grid_search_file $best_proportion $used_proportion $ensemble_file
     printf '\n'
 
   done
