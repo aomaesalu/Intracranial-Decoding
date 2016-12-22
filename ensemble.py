@@ -7,8 +7,9 @@ from lib.classification import get_true_values, Result
 from lib.ensemble import construct_ensemble, ensemble_vote
 
 
-def run(data_path, grid_search_path, output_path, number_of_partitions,
-        number_of_iterations, best_proportion, used_proportion):
+def run(data_path, grid_search_path, ensemble_output_path, score_output_path,
+        number_of_partitions, number_of_iterations, best_proportion,
+        used_proportion):
 
     # Read partitioned input data
     data = read_partitioned_data(data_path, number_of_iterations,
@@ -34,10 +35,10 @@ def run(data_path, grid_search_path, output_path, number_of_partitions,
     result.calculate()
 
     # Output the ensemble into the specified file
-    write_data(output_path, ensemble)
+    write_data(ensemble_output_path, ensemble)
 
-    # Output the results of the ensemble on the screen
-    print(result)
+    # Output the ensemble score into the specified file
+    write_data(score_output_path, result)
 
 
 if __name__ == '__main__':
@@ -47,21 +48,24 @@ if __name__ == '__main__':
     PARSER.add_argument('data_path', help='the pickled input data file path')
     PARSER.add_argument('grid_search_path', help='the pickled data input ' +
                         'file containing all of the results of the grid search')
-    PARSER.add_argument('output_path', help='the pickled ensemble results ' \
+    PARSER.add_argument('ensemble_output_path', help='the pickled ensemble ' +
                         'data output data file path')
+    PARSER.add_argument('score_output_path', help='the pickled ensemble ' +
+                        'score data output data file path')
     PARSER.add_argument('partitions', help='the amount of equal sized data ' +
                         'sets created upon partitioning the data', type=int)
     PARSER.add_argument('iterations', help='the amount of times to perform ' +
                         'k-fold cross-validation', type=int)
-    PARSER.add_argument('best_proportion', help='the proportion of best ' \
-                        'results to be taken into account while constructing ' \
+    PARSER.add_argument('best_proportion', help='the proportion of best ' +
+                        'results to be taken into account while constructing ' +
                         'the ensemble', type=float)
-    PARSER.add_argument('used_proportion', help='the proportion of results ' \
-                        'most disagreeing with each other to be kept in the ' \
+    PARSER.add_argument('used_proportion', help='the proportion of results ' +
+                        'most disagreeing with each other to be kept in the ' +
                         'ensemble', type=float)
     ARGUMENTS = PARSER.parse_args()
 
     # Run the ensemble construction and scoring script
-    run(ARGUMENTS.data_path, ARGUMENTS.grid_search_path, ARGUMENTS.output_path,
+    run(ARGUMENTS.data_path, ARGUMENTS.grid_search_path,
+        ARGUMENTS.ensemble_output_path, ARGUMENTS.score_output_path,
         ARGUMENTS.partitions, ARGUMENTS.iterations, ARGUMENTS.best_proportion,
         ARGUMENTS.used_proportion)
