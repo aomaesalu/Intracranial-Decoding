@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# This pipeline is used on a remote server. Grid search is used and the best
+# results are combined into an ensemble classificator. A different ensemble is
+# trained for each input file.
+
+# TODO: SLURM usage. Can't run the algorithm on the server without it.
+# TODO: Heatmaps
+
 function strrep {
   replaced=${1/TIMEWINDOW/$2}
   echo ${replaced//FREQUENCYBAND/$3}
@@ -55,12 +62,12 @@ do
     python ./filter_by_class.py $data_file $filtered_data_file 10 20 30 40 50
     printf '\n\n'
 
-    # Descriptive analysis of the data set. This is not necessaryly a part of
-    # the pipeline, as the data set does not change, but it is still currently
-    # included for the purposes of clarity.
-    printf '# Pipeline (%d, %s): Descriptive analysis\n' $time_window $frequency_band
-    python ./descriptive_analysis.py $filtered_data_file
-    printf '\n'
+    # # Descriptive analysis of the data set. This is not necessaryly a part of
+    # # the pipeline, as the data set does not change, but it is still currently
+    # # included for the purposes of clarity.
+    # printf '# Pipeline (%d, %s): Descriptive analysis\n' $time_window $frequency_band
+    # python ./descriptive_analysis.py $filtered_data_file
+    # printf '\n'
 
     # Data partitioning. We use stratified k-fold cross-validation N times.
     printf '# Pipeline (%d, %s): Partitioning data %d times into %d equal sets\n' $time_window $frequency_band $iterations $partitions
