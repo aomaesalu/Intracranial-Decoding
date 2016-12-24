@@ -11,7 +11,7 @@ def run(input_path, output_path):
     results = read_data(input_path)
 
     # Retrieve the best result
-    best_result = sorted(results, key=lambda k: k['f1'], reverse=True)[0]
+    best_result = sorted(results, key=lambda k: k.average_f1(), reverse=True)[0]
 
     # Output the score into the specified file
     write_data(output_path, best_result)
