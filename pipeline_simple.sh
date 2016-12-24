@@ -4,8 +4,6 @@
 # search is applied to all of the algorithms in question. Only the best
 # classification function and parameters are returned for each input file.
 
-# TODO: Heatmaps
-
 function strrep {
   replaced=${1/TIMEWINDOW/$2}
   echo ${replaced//FREQUENCYBAND/$3}
@@ -85,4 +83,4 @@ done
 # frequency bands
 python ./integrate_scores.py $raw_classification_score_file $result_file "${time_windows}" "${frequency_bands}"
 
-# TODO: Implement result plotting
+python ./visualise.py $result_file $result_plot_file
