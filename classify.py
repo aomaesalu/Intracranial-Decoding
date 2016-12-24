@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-i
 
 from argparse import ArgumentParser
-from lib.classification import classify, classifierFromAlgorithm
+from lib.classification import classify, classifier_from_algorithm
 from lib.grid_search import grid_search
 from lib.io import read_partitioned_data, write_data
 
@@ -26,14 +26,6 @@ def run(input_path, output_path, number_of_partitions, number_of_iterations,
         }
     }
 
-    # Set the classification function used based on whether grid search is set
-    # to be used or not.
-    classification = None
-    if number_of_trials:
-        classification = grid_search
-    else:
-        classification = classify
-
     # Initialise the grid search result list
     results = []
 
@@ -56,7 +48,7 @@ def run(input_path, output_path, number_of_partitions, number_of_iterations,
 
             # Perform classification and append the results to the complete
             # result list
-            results.append(classify(data, classifierFromAlgorithm[algorithm]))
+            results.append(classify(data, classifier_from_algorithm[algorithm]))
 
     # Output the grid search results into the specified file
     write_data(output_path, results)

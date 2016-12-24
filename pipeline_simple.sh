@@ -68,7 +68,7 @@ do
     printf '\n'
 
     # Classification and grid search
-    printf '# Pipeline (%d, %s): Classification and grid search\n' $time_window $frequency_band
+    printf '# Pipeline (%d, %s): Classification\n' $time_window $frequency_band
     python ./classify.py $partitioned_data_file $classification_file $partitions $iterations
     printf '\n'
 

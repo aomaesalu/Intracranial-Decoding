@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# This pipeline is used either on a local computer or a remote server. Grid
-# search is applied to all of the algorithms in question. Only the best
-# classification function and parameters are returned for each input file.
+# This pipeline is used either on a remote server. Grid search is applied to all
+# of the algorithms in question. Only the best classification function and
+# parameters are returned for each input file.
 
 # TODO: SLURM usage. Can't run the algorithm on the server without it.
 # TODO: Heatmaps
@@ -29,7 +29,7 @@ partitions=10
 iterations=10
 
 # Set grid search parameters
-trials=100
+trials=10000
 
 # Iterate through each time window
 for time_window in $time_windows
