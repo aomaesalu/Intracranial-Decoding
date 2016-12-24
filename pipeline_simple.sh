@@ -4,6 +4,8 @@
 # search is applied to all of the algorithms in question. Only the best
 # classification function and parameters are returned for each input file.
 
+# TODO: Heatmaps
+
 function strrep {
   replaced=${1/TIMEWINDOW/$2}
   echo ${replaced//FREQUENCYBAND/$3}
@@ -13,8 +15,8 @@ function strrep {
 raw_data_file='data/raw/stim_probe_category_ON_meanFREQUENCYBAND_LFP_bipolar_noscram_artif_brodmann_wTIMEWINDOW_FREQUENCYBAND_resppositive.pkl'
 raw_filtered_data_file='data/filtered/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_partitioned_data_file='data/partitioned/TIMEWINDOW_FREQUENCYBAND.pkl'
-classification_file='data/classification/TIMEWINDOW_FREQUENCYBAND.pkl'
-classification_score_file='data/score/TIMEWINDOW_FREQUENCYBAND.pkl'
+raw_classification_file='data/classification/TIMEWINDOW_FREQUENCYBAND.pkl'
+raw_classification_score_file='data/score/TIMEWINDOW_FREQUENCYBAND.pkl'
 result_file='data/result/result.pkl'
 
 # Initialise the values of time windows and frequency bands researched
@@ -38,8 +40,8 @@ do
     data_file=$(strrep $raw_data_file $time_window $frequency_band)
     filtered_data_file=$(strrep $raw_filtered_data_file $time_window $frequency_band)
     partitioned_data_file=$(strrep $raw_partitioned_data_file $time_window $frequency_band)
-    grid_search_file=$(strrep $raw_grid_search_file $time_window $frequency_band)
-    grid_search_score_file=$(strrep $raw_grid_search_score_file $time_window $frequency_band)
+    classification_file=$(strrep $raw_classification_file $time_window $frequency_band)
+    classification_score_file=$(strrep $raw_classification_score_file $time_window $frequency_band)
 
     # Split file name and extension
     partitioned_data_file_name=${partitioned_data_file%.*}
@@ -65,7 +67,7 @@ do
     done
     printf '\n'
 
-    # Classification and grid search
+    # Classification
     printf '# Pipeline (%d, %s): Classification\n' $time_window $frequency_band
     python ./classify.py $partitioned_data_file $classification_file $partitions $iterations
     printf '\n'
@@ -83,4 +85,4 @@ done
 # frequency bands
 python ./integrate_scores.py $raw_classification_score_file $result_file "${time_windows}" "${frequency_bands}"
 
-python ./visualise.py $result_file $result_plot_file
+# TODO: Implement result plotting
