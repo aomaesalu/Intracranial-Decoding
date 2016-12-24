@@ -79,7 +79,7 @@ do
 
     # Classification and grid search
     printf '# Pipeline (%d, %s): Classification and grid search\n' $time_window $frequency_band
-    python ./classify.py $partitioned_data_file $grid_search_file $partitions $iterations $trials
+    python ./classify.py $partitioned_data_file $grid_search_file $partitions $iterations --grid_search $trials
     printf '\n'
 
     # Ensemble construction, classification and scoring
