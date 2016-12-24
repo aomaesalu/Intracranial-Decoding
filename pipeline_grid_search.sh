@@ -88,4 +88,5 @@ done
 # frequency bands
 python ./integrate_scores.py $raw_grid_search_score_file $result_file "${time_windows}" "${frequency_bands}"
 
+# Visualise the integrated results as a heat map
 python ./visualise.py $result_file $result_plot_file
