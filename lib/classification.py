@@ -209,7 +209,7 @@ def get_true_values(data):
     return true_values
 
 
-classifierFromAlgorithm = {
+classifier_from_algorithm = {
     'svm': svm.SVC(),
     'random_forest': RandomForestClassifier(n_estimators=500)
 }

@@ -3,20 +3,20 @@
 
 from random import choice, randint, uniform
 from multiprocessing import Pool, cpu_count
-from .classification import classify, classifierFromAlgorithm
+from .classification import classify, classifier_from_algorithm
 
 
 def generate_parameter(parameter):
     if parameter[0] == tuple:
-        return samplerFromType[parameter[0]](parameter[1])
+        return sampler_from_type[parameter[0]](parameter[1])
     else:
-        return samplerFromType[parameter[0]](*parameter[1])
+        return sampler_from_type[parameter[0]](*parameter[1])
 
 
 def grid_search_iteration(data, algorithm, parameter_model):
 
     # Initialise the classifier
-    classifier = classifierFromAlgorithm[algorithm]
+    classifier = classifier_from_algorithm[algorithm]
 
     # Generate model parameters
     parameters = {}
@@ -66,7 +66,7 @@ def grid_search(data, algorithm, parameter_model, number_of_iterations):
     return results
 
 
-samplerFromType = {
+sampler_from_type = {
     int: randint,
     float: uniform,
     tuple: choice
