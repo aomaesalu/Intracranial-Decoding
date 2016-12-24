@@ -5,7 +5,6 @@
 # trained for each input file.
 
 # TODO: SLURM usage. Can't run the algorithm on the server without it.
-# TODO: Heatmaps
 
 function strrep {
   replaced=${1/TIMEWINDOW/$2}
@@ -95,4 +94,4 @@ done
 # frequency bands
 python ./integrate_scores.py $raw_ensemble_score_file $result_file "${time_windows}" "${frequency_bands}"
 
-# TODO: Implement result plotting
+python ./visualise.py $result_file $result_plot_file
