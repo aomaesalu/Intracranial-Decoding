@@ -19,6 +19,7 @@ raw_grid_search_file='data/grid_search/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_ensemble_file='data/ensemble/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_ensemble_score_file='data/score/TIMEWINDOW_FREQUENCYBAND.pkl'
 result_file='data/result/result.pkl'
+result_plot_file='plots/result.png'
 
 # Initialise the values of time windows and frequency bands researched
 time_windows="50 150 250"
