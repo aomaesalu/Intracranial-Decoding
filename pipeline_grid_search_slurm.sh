@@ -2,14 +2,17 @@
 #The name of the job is pipeline_grid_search
 #SBATCH -J pipeline_grid_search
  
-#The job requires 100 compute nodes
-#SBATCH -N 100
+#The job requires 10 compute nodes
+#SBATCH -N 10
  
 #The job requires 1 task per node
 #SBATCH --ntasks-per-node=1
+
+#Each node needs 2gb
+#SBATCH --mem=2048
  
 #The maximum walltime of the job is a 20 hours
-#SBATCH -t 20:00:00
+#SBATCH -t 06:00:00
  
 #Here we call srun to launch the uname command in parallel
 

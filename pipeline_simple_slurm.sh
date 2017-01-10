@@ -3,13 +3,13 @@
 #SBATCH -J pipeline_simple
  
 #The job requires 100 compute nodes
-#SBATCH -N 100
+#SBATCH -N 10
  
 #The job requires 1 task per node
 #SBATCH --ntasks-per-node=1
  
 #The maximum walltime of the job is a 2 hours
-#SBATCH -t 02:00:00
+#SBATCH -t 04:00:00
  
 #Here we call srun to launch the uname command in parallel
 
