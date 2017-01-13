@@ -5,23 +5,23 @@ from argparse import ArgumentParser
 from lib.io import read_data, write_data
 
 
-def run(raw_input_path, output_path_accuracy, output_path_precision,
+def run(raw_input_path, output_path_recall, output_path_precision,
         output_path_f1, time_windows, frequency_bands):
 
     # Convert time windows to integers
     time_windows = [int(time_window) for time_window in time_windows]
 
     # Initialise the integrated score data dictionaries
-    integrated_accuracy = {}
+    integrated_recall = {}
     integrated_precision = {}
     integrated_f1 = {}
     for time_window in time_windows:
-        integrated_accuracy[time_window] = {}
+        integrated_recall[time_window] = {}
         integrated_precision[time_window] = {}
         integrated_f1[time_window] = {}
     for time_window in time_windows:
         for frequency_band in frequency_bands:
-            integrated_accuracy[time_window][frequency_band] = None
+            integrated_recall[time_window][frequency_band] = None
             integrated_precision[time_window][frequency_band] = None
             integrated_f1[time_window][frequency_band] = None
 
@@ -40,12 +40,12 @@ def run(raw_input_path, output_path_accuracy, output_path_precision,
 
             # Add the F1-score received from the data into the integrated data
             # dictionary
-            integrated_accuracy[time_window][frequency_band] = input_data.average_accuracy()
+            integrated_recall[time_window][frequency_band] = input_data.average_recall()
             integrated_precision[time_window][frequency_band] = input_data.average_precision()
             integrated_f1[time_window][frequency_band] = input_data.average_f1()
 
     # Output the integrated scores into the specified files
-    write_data(output_path_accuracy, integrated_accuracy)
+    write_data(output_path_recall, integrated_recall)
     write_data(output_path_precision, integrated_precision)
     write_data(output_path_f1, integrated_f1)
 
@@ -55,8 +55,8 @@ if __name__ == '__main__':
     # Parse command line arguments
     PARSER = ArgumentParser()
     PARSER.add_argument('input_path', help='the pickled input data file path')
-    PARSER.add_argument('output_path_accuracy', help='the pickled output ' +
-                        'accuracy results data file path')
+    PARSER.add_argument('output_path_recall', help='the pickled output ' +
+                        'recall results data file path')
     PARSER.add_argument('output_path_precision', help='the pickled output ' +
                         'precision results data file path')
     PARSER.add_argument('output_path_f1', help='the pickled output f1-score ' +
@@ -67,6 +67,6 @@ if __name__ == '__main__':
     ARGUMENTS = PARSER.parse_args()
 
     # Run the score integration script
-    run(ARGUMENTS.input_path, ARGUMENTS.output_path_accuracy,
+    run(ARGUMENTS.input_path, ARGUMENTS.output_path_recall,
         ARGUMENTS.output_path_precision, ARGUMENTS.output_path_f1,
         ARGUMENTS.time_windows.split(' '), ARGUMENTS.frequency_bands.split(' '))

@@ -31,10 +31,10 @@ raw_partitioned_data_file='data/partitioned/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_grid_search_file='data/grid_search/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_ensemble_file='data/ensemble/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_ensemble_score_file='data/score/TIMEWINDOW_FREQUENCYBAND.pkl'
-result_file_accuracy='data/results/result_ensemble_accuracy.pkl'
+result_file_recall='data/results/result_ensemble_recall.pkl'
 result_file_precision='data/results/result_ensemble_precision.pkl'
 result_file_f1='data/results/result_ensemble_f1.pkl'
-result_plot_file_accuracy='plots/result_ensemble_accuracy.png'
+result_plot_file_recall='plots/result_ensemble_recall.png'
 result_plot_file_precision='plots/result_ensemble_precision.png'
 result_plot_file_f1='plots/result_ensemble_f1.png'
 
@@ -110,9 +110,9 @@ done
 
 # Integrate the ensemble scores for all of the different time windows and
 # frequency bands
-srun python ./integrate_scores.py $raw_ensemble_score_file $result_file_accuracy $result_file_precision $result_file_f1 "${time_windows}" "${frequency_bands}"
+srun python ./integrate_scores.py $raw_ensemble_score_file $result_file_recall $result_file_precision $result_file_f1 "${time_windows}" "${frequency_bands}"
 
 # Visualise the integrated results as a heat map
-python ./visualise.py $result_file_accuracy $result_plot_file_accuracy
+python ./visualise.py $result_file_recall $result_plot_file_recall
 python ./visualise.py $result_file_precision $result_plot_file_precision
 python ./visualise.py $result_file_f1 $result_plot_file_f1
