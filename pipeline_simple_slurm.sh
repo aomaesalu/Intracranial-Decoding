@@ -1,16 +1,16 @@
 #!/bin/bash
 #The name of the job is pipeline_simple
 #SBATCH -J pipeline_simple
- 
+
 #The job requires 100 compute nodes
 #SBATCH -N 10
- 
+
 #The job requires 1 task per node
 #SBATCH --ntasks-per-node=1
- 
+
 #The maximum walltime of the job is a 2 hours
 #SBATCH -t 04:00:00
- 
+
 #Here we call srun to launch the uname command in parallel
 
 # This pipeline is used either on a local computer or a remote server. Grid
@@ -30,8 +30,12 @@ raw_filtered_data_file='data/filtered/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_partitioned_data_file='data/partitioned/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_classification_file='data/classification/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_classification_score_file='data/score/TIMEWINDOW_FREQUENCYBAND.pkl'
-result_file='data/result/result_simple.pkl'
-result_plot_file='plots/result_simple.png'
+result_file_accuracy='data/results/result_accuracy.pkl'
+result_file_precision='data/results/result_precision.pkl'
+result_file_f1='data/results/result_f1.pkl'
+result_plot_file_accuracy='plots/result_accuracy.png'
+result_plot_file_precision='plots/result_precision.png'
+result_plot_file_f1='plots/result_f1.png'
 
 # Initialise the values of time windows and frequency bands researched
 time_windows="50 150 250"
@@ -97,7 +101,9 @@ done
 
 # Integrate the ensemble scores for all of the different time windows and
 # frequency bands
-srun python ./integrate_scores.py $raw_classification_score_file $result_file "${time_windows}" "${frequency_bands}"
+srun python ./integrate_scores.py $raw_classification_score_file $result_file_accuracy $result_file_precision $result_file_f1 "${time_windows}" "${frequency_bands}"
 
 # Visualise the integrated results as a heat map
-python ./visualise.py $result_file $result_plot_file
+python ./visualise.py $result_file_accuracy $result_plot_file_accuracy
+python ./visualise.py $result_file_precision $result_plot_file_precision
+python ./visualise.py $result_file_f1 $result_plot_file_f1

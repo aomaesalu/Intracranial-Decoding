@@ -9,6 +9,7 @@ def run(input_path, output_path):
 
     # Read the integrated score results
     scores = read_data(input_path)
+    print(scores) # TODO: Remove
 
     # Visualise the scores as a heatmap
     pass # TODO

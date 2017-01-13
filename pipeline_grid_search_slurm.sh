@@ -1,19 +1,19 @@
 #!/bin/bash
 #The name of the job is pipeline_grid_search
 #SBATCH -J pipeline_grid_search
- 
+
 #The job requires 10 compute nodes
 #SBATCH -N 10
- 
+
 #The job requires 1 task per node
 #SBATCH --ntasks-per-node=1
 
 #Each node needs 2gb
 #SBATCH --mem=2048
- 
+
 #The maximum walltime of the job is a 20 hours
 #SBATCH -t 06:00:00
- 
+
 #Here we call srun to launch the uname command in parallel
 
 
@@ -34,8 +34,12 @@ raw_filtered_data_file='data/filtered/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_partitioned_data_file='data/partitioned/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_grid_search_file='data/grid_search/TIMEWINDOW_FREQUENCYBAND.pkl'
 raw_grid_search_score_file='data/score/TIMEWINDOW_FREQUENCYBAND.pkl'
-result_file='data/result/result_grid.pkl'
-result_plot_file='plots/result_grid.png'
+result_file_accuracy='data/results/result_grid_search_accuracy.pkl'
+result_file_precision='data/results/result_grid_search_precision.pkl'
+result_file_f1='data/results/result_grid_search_f1.pkl'
+result_plot_file_accuracy='plots/result_grid_search_accuracy.png'
+result_plot_file_precision='plots/result_grid_search_precision.png'
+result_plot_file_f1='plots/result_grid_search_f1.png'
 
 # Initialise the values of time windows and frequency bands researched
 time_windows="50 150 250"
@@ -104,7 +108,9 @@ done
 
 # Integrate the ensemble scores for all of the different time windows and
 # frequency bands
-srun python ./integrate_scores.py $raw_grid_search_score_file $result_file "${time_windows}" "${frequency_bands}"
+srun python ./integrate_scores.py $raw_grid_search_score_file $result_file_accuracy $result_file_precision $result_file_f1 "${time_windows}" "${frequency_bands}"
 
 # Visualise the integrated results as a heat map
-python ./visualise.py $result_file $result_plot_file
+python ./visualise.py $result_file_accuracy $result_plot_file_accuracy
+python ./visualise.py $result_file_precision $result_plot_file_precision
+python ./visualise.py $result_file_f1 $result_plot_file_f1
